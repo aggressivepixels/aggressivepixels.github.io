@@ -1,0 +1,157 @@
+:root {
+  --accent-color: #00bfa5;
+  --accent-color-translucent: #00bfa65b;
+  --accent-color-dark: #009b86;
+  --text-color-primary: #000000de;
+  --text-color-secondary: #000000aa;
+}
+
+body {
+  color: var(--text-color-secondary);
+  font-family: "Merriweather", serif;
+}
+
+a:any-link {
+  color: var(--accent-color-dark);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--text-color-primary);
+}
+
+footer {
+  background-color: var(--accent-color);
+  line-height: 1.75;
+  text-align: center;
+  padding: 1em;
+}
+
+footer a:any-link {
+  color: var(--text-color-primary);
+}
+
+pre {
+  color: var(--text-color-primary);
+  overflow: auto;
+  word-wrap: normal;
+  white-space: pre;
+  background-color: #ebebeb;
+  border-radius: 1em;
+  padding: 1em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+code {
+  font-family: "Fira Mono", monospace;
+}
+
+nav {
+  background-color: var(--accent-color);
+}
+
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding-left: 1em;
+  padding-right: 1em;
+  padding-top: 1em;
+}
+
+nav ul li {
+  padding-bottom: 1em;
+}
+
+nav ul li a:any-link {
+  color: var(--text-color-secondary);
+  text-decoration: none;
+}
+
+nav ul li a:hover {
+  text-decoration: underline;
+}
+
+nav ul li a.logo {
+  color: var(--text-color-primary);
+  font-size: 1.5em;
+  font-variant-caps: small-caps;
+  -moz-font-feature-settings: "smcp";
+  -webkit-font-feature-settings: "smcp";
+  font-feature-settings: "smcp";
+}
+
+article {
+  padding-left: 1em;
+  padding-right: 1em;
+  padding-top: 1.5em;
+  padding-bottom: 1.5em;
+}
+
+article h1 a:any-link {
+  color: var(--text-color-primary);
+  text-decoration: none;
+}
+
+article h1 a:hover {
+  text-decoration: underline;
+}
+
+article time + h1 {
+  margin-top: 0em;
+}
+
+ul.posts {
+  list-style: none;
+  margin: 0;
+  padding-left: 1em;
+  padding-right: 1em;
+  padding-top: 1.5em;
+}
+
+ul.posts li {
+  padding-bottom: 2em;
+}
+
+ul.posts li time + h2 {
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+}
+
+ul.posts li p.subtitle {
+  margin: 0px;
+  margin-bottom: 0.25em;
+  color: var(--text-color-primary);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+  line-height: 1.5;
+}
+
+@media screen and (min-width: 800px) {
+  main,
+  nav ul li {
+    margin: 0 auto;
+    width: 800px;
+  }
+
+  nav ul li {
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+}
