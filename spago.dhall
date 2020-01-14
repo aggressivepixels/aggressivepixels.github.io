@@ -1,7 +1,9 @@
 { name = "aggressivepixels"
 , dependencies =
     [ "console"
+    , "datetime"
     , "effect"
+    , "formatters"
     , "markdown"
     , "markdown-smolder"
     , "node-fs"
