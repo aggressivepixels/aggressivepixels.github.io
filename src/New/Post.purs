@@ -1,9 +1,7 @@
 module New.Post (Post(..), viewEntry, viewContent) where
 
 import Prelude
-import Data.Char.Unicode (isAlphaNum)
 import Data.DateTime (DateTime)
-import Data.Enum (fromEnum)
 import Data.Formatter.DateTime (Formatter, FormatterCommand(..))
 import Data.Formatter.DateTime as DateTimeFormatter
 import Data.List as List
