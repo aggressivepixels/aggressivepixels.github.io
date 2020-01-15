@@ -22,7 +22,7 @@ derive instance eqPost :: Eq Post
 instance ordPost :: Ord Post where
   compare (Post a) (Post b) = compare a.dateTime b.dateTime
 
-viewEntry :: Post -> Markup Void
+viewEntry :: forall e. Post -> Markup e
 viewEntry (Post post) =
   li do
     viewDateTime post.dateTime
@@ -32,14 +32,14 @@ viewEntry (Post post) =
   where
   url = postURL post.slug
 
-viewContent :: Post -> Markup Void -> Markup Void
+viewContent :: forall e. Post -> Markup e -> Markup e
 viewContent (Post post) content =
   article do
     viewDateTime post.dateTime
     h1 $ a ! href (postURL post.slug) $ text post.title
     content
 
-viewDateTime :: DateTime -> Markup Void
+viewDateTime :: forall e. DateTime -> Markup e
 viewDateTime dateTime = time ! datetime machineDate $ text displayDate
   where
   displayDate = DateTimeFormatter.format displayDateFormatter dateTime
