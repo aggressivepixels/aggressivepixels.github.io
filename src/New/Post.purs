@@ -1,10 +1,17 @@
 module New.Post (Post(..), viewEntry, viewContent) where
 
 import Prelude
+import Data.Array as Array
+import Data.Array ((:))
+import Data.Char.Unicode as Unicode
 import Data.DateTime (DateTime)
 import Data.Formatter.DateTime (Formatter, FormatterCommand(..))
 import Data.Formatter.DateTime as DateTimeFormatter
 import Data.List as List
+import Data.Maybe (Maybe(..))
+import Data.String.CodeUnits (fromCharArray, toCharArray)
+import Data.String.Common (joinWith, replaceAll, toLower)
+import Data.String.Pattern (Pattern(..), Replacement(..))
 import Text.Smolder.HTML (a, article, h1, h2, li, p, time)
 import Text.Smolder.HTML.Attributes (className, datetime, href)
 import Text.Smolder.Markup (Markup, (!), text)
@@ -68,3 +75,33 @@ machineDateFormatter =
     , Placeholder "-"
     , DayOfMonthTwoDigits
     ]
+
+-- The logic for creating the slug was taken from here:
+-- https://robertwpearce.com/hakyll-pt-5-generating-custom-post-filenames-from-a-title-slug.html
+toSlug :: String -> String
+toSlug =
+  replaceAll (Pattern "&") (Replacement "and")
+    >>> replaceAll (Pattern "'") (Replacement "")
+    >>> toCharArray
+    >>> map keepAlphaNum
+    >>> fromCharArray
+    >>> toLower
+    >>> words
+    >>> joinWith "-"
+  where
+  keepAlphaNum c
+    | Unicode.isAlphaNum c = c
+    | otherwise = ' '
+
+-- Taken from here: 
+-- https://github.com/cdepillabout/purescript-words-lines
+words :: String -> Array String
+words = map fromCharArray <<< go <<< toCharArray
+  where
+  go s = case Array.uncons $ Array.dropWhile Unicode.isSpace s of
+    Nothing -> []
+    Just { head, tail } ->
+      let
+        withBreaks = Array.span (not Unicode.isSpace) (head : tail)
+      in
+        withBreaks.init : go withBreaks.rest
