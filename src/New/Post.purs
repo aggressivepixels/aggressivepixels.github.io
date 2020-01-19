@@ -25,7 +25,6 @@ newtype Post
   = Post
   { title :: String
   , description :: String
-  , slug :: String
   , dateTime :: DateTime
   }
 
@@ -42,13 +41,13 @@ viewEntry (Post post) =
     p ! className "subtitle" $ text post.description
     a ! href url $ text "Read more &rarr;"
   where
-  url = postURL post.slug
+  url = (postURL $ toSlug post.title)
 
 viewContent :: forall e. Post -> Markup e -> Markup e
 viewContent (Post post) content =
   article do
     viewDateTime post.dateTime
-    h1 $ a ! href (postURL post.slug) $ text post.title
+    h1 $ a ! href (postURL $ toSlug post.title) $ text post.title
     content
 
 viewDateTime :: forall e. DateTime -> Markup e
@@ -127,7 +126,6 @@ parser = Tuple <$> metadata <*> content
           { title: title
           , description: description
           , dateTime: dateTime
-          , slug: toSlug title
           }
 
   content =
