@@ -102,6 +102,6 @@ words = map fromCharArray <<< go <<< toCharArray
     Nothing -> []
     Just { head, tail } ->
       let
-        withBreaks = Array.span (not Unicode.isSpace) (head : tail)
+        { init, rest } = Array.span (not Unicode.isSpace) (head : tail)
       in
-        withBreaks.init : go withBreaks.rest
+        init : go rest
