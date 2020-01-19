@@ -1,4 +1,4 @@
-module New.Post (Post(..), viewEntry, viewContent, parser) where
+module New.Post (Post(..), viewEntry, viewContent, parser, getURL) where
 
 import Prelude
 import Control.Alt ((<|>))
@@ -41,13 +41,13 @@ viewEntry (Post post) =
     p ! className "subtitle" $ text post.description
     a ! href url $ text "Read more &rarr;"
   where
-  url = (postURL $ toSlug post.title)
+  url = getURL $ Post post
 
 viewContent :: forall e. Post -> Markup e -> Markup e
 viewContent (Post post) content =
   article do
     viewDateTime post.dateTime
-    h1 $ a ! href (postURL $ toSlug post.title) $ text post.title
+    h1 $ a ! href (getURL $ Post post) $ text post.title
     content
 
 viewDateTime :: forall e. DateTime -> Markup e
@@ -57,8 +57,8 @@ viewDateTime dateTime = time ! datetime machineDate $ text displayDate
 
   machineDate = DateTimeFormatter.format machineDateFormatter dateTime
 
-postURL :: String -> String
-postURL slug = "posts" <> "/" <> slug <> ".html"
+getURL :: Post -> String
+getURL (Post { title }) = "posts" <> "/" <> getSlug title <> ".html"
 
 displayDateFormatter :: Formatter
 displayDateFormatter =
@@ -82,8 +82,8 @@ machineDateFormatter =
 
 -- The logic for creating the slug was taken from here:
 -- https://robertwpearce.com/hakyll-pt-5-generating-custom-post-filenames-from-a-title-slug.html
-toSlug :: String -> String
-toSlug =
+getSlug :: String -> String
+getSlug =
   replaceAll (Pattern "&") (Replacement "and")
     >>> replaceAll (Pattern "'") (Replacement "")
     >>> toCharArray
