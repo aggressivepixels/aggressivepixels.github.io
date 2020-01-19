@@ -128,10 +128,7 @@ parser = Tuple <$> metadata <*> content
           , dateTime: dateTime
           }
 
-  content =
-    many anyChar
-      <#> fromCharArray
-      <#> trim
+  content = fromCharArray >>> trim <$> many anyChar
 
   section :: forall a. String -> ParserT String m a -> ParserT String m a
   section title sectionParser = do
@@ -143,10 +140,7 @@ parser = Tuple <$> metadata <*> content
     void eol
     pure result
 
-  stringContent =
-    many (noneOf [ '\n', '\r' ])
-      <#> fromCharArray
-      <#> trim
+  stringContent = fromCharArray >>> trim <$> many (noneOf [ '\n', '\r' ])
 
   dateContent = do
     skipMany whitespace
