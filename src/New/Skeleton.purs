@@ -26,10 +26,11 @@ import Text.Smolder.HTML.Attributes
   , name
   , rel
   )
-import Text.Smolder.Markup (Markup, (!), text)
+import Text.Smolder.Markup (Markup, (!), doctype, text)
 
 view :: forall e. Maybe String -> Markup e -> Markup e
-view pageTitle pageContent =
+view pageTitle pageContent = do
+  doctype "html"
   html ! lang "en" $ do
     head do
       meta ! charset "utf-8"
