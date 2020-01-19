@@ -1,8 +1,9 @@
-module New.Post (Post(..), viewEntry, viewContent) where
+module New.Post (Post(..), viewEntry, viewContent, parser) where
 
 import Prelude
+import Control.Alt ((<|>))
 import Data.Array as Array
-import Data.Array ((:))
+import Data.Array ((:), many)
 import Data.Char.Unicode as Unicode
 import Data.DateTime (DateTime)
 import Data.Formatter.DateTime (Formatter, FormatterCommand(..))
@@ -10,8 +11,12 @@ import Data.Formatter.DateTime as DateTimeFormatter
 import Data.List as List
 import Data.Maybe (Maybe(..))
 import Data.String.CodeUnits (fromCharArray, toCharArray)
-import Data.String.Common (joinWith, replaceAll, toLower)
+import Data.String.Common (joinWith, replaceAll, toLower, trim)
 import Data.String.Pattern (Pattern(..), Replacement(..))
+import Data.Tuple (Tuple(..))
+import Text.Parsing.Parser (ParserT)
+import Text.Parsing.Parser.Combinators ((<?>), skipMany, try)
+import Text.Parsing.Parser.String (anyChar, char, noneOf, oneOf, string)
 import Text.Smolder.HTML (a, article, h1, h2, li, p, time)
 import Text.Smolder.HTML.Attributes (className, datetime, href)
 import Text.Smolder.Markup (Markup, (!), text)
@@ -105,3 +110,63 @@ words = map fromCharArray <<< go <<< toCharArray
         { init, rest } = Array.span (not Unicode.isSpace) (head : tail)
       in
         init : go rest
+
+parser :: forall m. Monad m => ParserT String m (Tuple Post String)
+parser = Tuple <$> metadata <*> content
+  where
+  metadata = do
+    separator
+    -- TODO: Allow to write these fields in any order.
+    -- TODO: Add tags field.
+    title <- section "title" stringContent
+    description <- section "description" stringContent
+    dateTime <- section "date" dateContent
+    separator
+    pure
+      $ Post
+          { title: title
+          , description: description
+          , dateTime: dateTime
+          , slug: toSlug title
+          }
+
+  content =
+    many anyChar
+      <#> fromCharArray
+      <#> trim
+
+  section :: forall a. String -> ParserT String m a -> ParserT String m a
+  section title sectionParser = do
+    skipMany whitespace
+    void $ string title
+    skipMany whitespace
+    void $ char ':'
+    result <- sectionParser
+    void eol
+    pure result
+
+  stringContent =
+    many (noneOf [ '\n', '\r' ])
+      <#> fromCharArray
+      <#> trim
+
+  dateContent = do
+    skipMany whitespace
+    date <- DateTimeFormatter.unformatParser machineDateFormatter
+    skipMany whitespace
+    pure date
+
+  separator = do
+    skipMany whitespace
+    void $ string "---"
+    skipMany whitespace
+    void eol
+
+  whitespace = oneOf [ ' ', '\t' ]
+
+  eol =
+    try (string "\n\r")
+      <|> try (string "\r\n")
+      <|> string "\n"
+      <|> string "\r"
+      <?> "end of line"
