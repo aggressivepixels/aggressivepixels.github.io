@@ -1,9 +1,19 @@
-module New.Post (Post(..), viewEntry, viewContent, parser, getURL) where
+module New.Post
+  ( Post
+  , getDateTime
+  , getDescription
+  , getPath
+  , getTitle
+  , getURL
+  , parser
+  , viewContent
+  , viewEntry
+  ) where
 
 import Prelude
 import Control.Alt ((<|>))
-import Data.Array as Array
 import Data.Array ((:), many)
+import Data.Array as Array
 import Data.Char.Unicode as Unicode
 import Data.DateTime (DateTime)
 import Data.Formatter.DateTime (Formatter, FormatterCommand(..))
@@ -14,6 +24,8 @@ import Data.String.CodeUnits (fromCharArray, toCharArray)
 import Data.String.Common (joinWith, replaceAll, toLower, trim)
 import Data.String.Pattern (Pattern(..), Replacement(..))
 import Data.Tuple (Tuple(..))
+import Node.Path (FilePath)
+import Node.Path as Path
 import Text.Parsing.Parser (ParserT)
 import Text.Parsing.Parser.Combinators ((<?>), skipMany, try)
 import Text.Parsing.Parser.String (anyChar, char, noneOf, oneOf, string)
@@ -32,6 +44,15 @@ derive instance eqPost :: Eq Post
 
 instance ordPost :: Ord Post where
   compare (Post a) (Post b) = compare a.dateTime b.dateTime
+
+getTitle :: Post -> String
+getTitle (Post { title }) = title
+
+getDescription :: Post -> String
+getDescription (Post { description }) = description
+
+getDateTime :: Post -> DateTime
+getDateTime (Post { dateTime }) = dateTime
 
 viewEntry :: forall e. Post -> Markup e
 viewEntry (Post post) =
@@ -58,7 +79,13 @@ viewDateTime dateTime = time ! datetime machineDate $ text displayDate
   machineDate = DateTimeFormatter.format machineDateFormatter dateTime
 
 getURL :: Post -> String
-getURL (Post { title }) = "posts" <> "/" <> getSlug title <> ".html"
+getURL = getPathWithSep "/"
+
+getPath :: Post -> FilePath
+getPath = getPathWithSep Path.sep
+
+getPathWithSep :: String -> Post -> String
+getPathWithSep sep (Post { title }) = joinWith sep [ "posts", getSlug title <> ".html" ]
 
 displayDateFormatter :: Formatter
 displayDateFormatter =
