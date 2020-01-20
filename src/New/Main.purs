@@ -24,26 +24,6 @@ import Text.Markdown.SlamDown.Syntax (SlamDown)
 import Text.Parsing.Parser (runParser)
 import Text.Smolder.Renderer.String as StringRenderer
 
-wipe :: FilePath -> Effect Unit
-wipe file = do
-  exists <- FS.exists file
-  if exists then
-    doWipe file
-  else
-    pure unit
-  where
-  doWipe existingFile = do
-    stats <- FS.stat existingFile
-    if Stats.isDirectory stats then
-      doWipeDir existingFile
-    else
-      FS.unlink existingFile
-
-  doWipeDir dir = do
-    files <- FS.readdir dir
-    for_ files \f -> doWipe $ Path.concat [ dir, f ]
-    FS.rmdir dir
-
 main :: Effect Unit
 main = do
   -- Clean the dist folder.
@@ -73,3 +53,23 @@ main = do
         # Skeleton.view (Just $ Post.getTitle post)
         # StringRenderer.render
         # FS.writeTextFile UTF8 (Path.concat [ "dist", Post.getPath post ])
+
+wipe :: FilePath -> Effect Unit
+wipe file = do
+  exists <- FS.exists file
+  if exists then
+    doWipe file
+  else
+    pure unit
+  where
+  doWipe existingFile = do
+    stats <- FS.stat existingFile
+    if Stats.isDirectory stats then
+      doWipeDir existingFile
+    else
+      FS.unlink existingFile
+
+  doWipeDir dir = do
+    files <- FS.readdir dir
+    for_ files \f -> doWipe $ Path.concat [ dir, f ]
+    FS.rmdir dir
