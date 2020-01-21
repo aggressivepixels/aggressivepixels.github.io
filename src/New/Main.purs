@@ -95,6 +95,7 @@ copy (Source src) (Dest dst) = do
     for_ files \f -> do
       let
         srcPath = Path.concat [ dir, f ]
+
         dstPath = Path.concat [ existingDst, f ]
       stats <- FS.stat srcPath
       if Stats.isDirectory stats then do
