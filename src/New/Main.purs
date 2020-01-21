@@ -28,7 +28,7 @@ main :: Effect Unit
 main = do
   -- Clean the dist folder.
   wipe "dist"
-  FS.mkdir "dist"
+  copy (Source "static") (Dest "dist")
   -- Read the posts.
   postsFiles <- FS.readdir "posts"
   posts <-
@@ -73,3 +73,32 @@ wipe file = do
     files <- FS.readdir dir
     for_ files \f -> doWipe $ Path.concat [ dir, f ]
     FS.rmdir dir
+
+newtype Source
+  = Source FilePath
+
+newtype Dest
+  = Dest FilePath
+
+copy :: Source -> Dest -> Effect Unit
+copy (Source src) (Dest dst) = do
+  dstExists <- FS.exists dst
+  if dstExists then
+    pure unit
+  else
+    FS.mkdir dst
+  doCopyDir src dst
+  where
+  doCopyDir dir existingDst = do
+    files <- FS.readdir dir
+    for_ files \f -> do
+      let
+        srcPath = Path.concat [ dir, f ]
+        dstPath = Path.concat [ existingDst, f ]
+      stats <- FS.stat srcPath
+      if Stats.isDirectory stats then do
+        FS.mkdir dstPath
+        doCopyDir srcPath dstPath
+      else do
+        content <- FS.readFile srcPath
+        FS.writeFile dstPath content
