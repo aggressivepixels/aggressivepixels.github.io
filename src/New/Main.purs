@@ -1,6 +1,7 @@
 module New.Main (main) where
 
 import Prelude
+import Data.Array as Array
 import Data.Either (Either(..))
 import Data.Foldable (for_)
 import Data.Maybe (Maybe(..))
@@ -30,7 +31,7 @@ main = do
   wipe "dist"
   copy (Source "static") (Dest "dist")
   -- Read the posts.
-  postsFiles <- FS.readdir "posts"
+  postsFiles <- Array.sort <$> FS.readdir "posts"
   posts <-
     for postsFiles \postFile -> do
       rawContent <- FS.readTextFile UTF8 $ Path.concat [ "posts", postFile ]
