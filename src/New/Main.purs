@@ -31,14 +31,15 @@ main = do
   wipe "dist"
   copy (Source "static") (Dest "dist")
   -- Read the posts.
-  postsFiles <- Array.sort <$> FS.readdir "posts"
+  postsFiles <- FS.readdir "posts"
   posts <-
-    for postsFiles \postFile -> do
-      rawContent <- FS.readTextFile UTF8 $ Path.concat [ "posts", postFile ]
-      case runParser rawContent Post.parser of
-        -- TODO: We probably shouldn't throw.
-        Left err -> throw $ "when parsing " <> postFile <> ": " <> show err
-        Right postAndContent -> pure postAndContent
+    Array.sort
+      <$> for postsFiles \postFile -> do
+          rawContent <- FS.readTextFile UTF8 $ Path.concat [ "posts", postFile ]
+          case runParser rawContent Post.parser of
+            -- TODO: We probably shouldn't throw.
+            Left err -> throw $ "when parsing " <> postFile <> ": " <> show err
+            Right postAndContent -> pure postAndContent
   -- Write the index.
   Tuple.fst <$> posts
     # Index.view
