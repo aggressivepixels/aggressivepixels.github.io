@@ -3,7 +3,7 @@ module New.Main (main) where
 import Prelude
 import Data.Array as Array
 import Data.Either (Either(..))
-import Data.Foldable (for_)
+import Data.Foldable (fold, for_)
 import Data.Maybe (Maybe(..))
 import Data.Traversable (for)
 import Data.Tuple (Tuple(..))
@@ -29,7 +29,17 @@ main :: Effect Unit
 main = do
   -- Clean the dist folder.
   wipe "dist"
+  -- Copy the static files.
   copy (Source "static") (Dest "dist")
+  -- Write the CSS.
+  FS.mkdir $ Path.concat [ "dist", "css" ]
+  cssFiles <- Array.sort <$> FS.readdir "css"
+  finalCSS <-
+    fold
+      <$> for cssFiles \f -> do
+          content <- FS.readTextFile UTF8 (Path.concat [ "css", f ])
+          pure $ "/* " <> f <> " */\n\n" <> content <> "\n"
+  FS.writeTextFile UTF8 (Path.concat [ "dist", "css", "styles.css" ]) finalCSS
   -- Read the posts.
   postsFiles <- FS.readdir "posts"
   posts <-
