@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "postinstall": "spago install"
+    "postinstall": "spago install",
+    "serve": "spago run --main Serve"
   },
   "dependencies": {
     "purescript": "^0.13.5",
