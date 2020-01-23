@@ -1,0 +1,13 @@
+language: node_js
+
+env:
+  global:
+    - SSH_KEY="id_rsa"
+    - GIT_NAME="Jonathan Hernández"
+    - GIT_EMAIL="aggressivepixels@gmail.com"
+    - SOURCE_DIR="dist"
+    - DEPLOY_BRANCH="develop"
+
+after_success:
+  - yarn spago run
+  - ./deploy.sh
