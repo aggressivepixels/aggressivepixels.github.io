@@ -9,7 +9,6 @@ import Data.Traversable (for)
 import Data.Tuple (Tuple(..))
 import Data.Tuple as Tuple
 import Effect (Effect)
-import Effect.Console as Console
 import Effect.Exception (throw)
 import New.Index as Index
 import New.Post as Post
