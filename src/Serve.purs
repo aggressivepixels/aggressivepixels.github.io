@@ -1,4 +1,4 @@
-module New.Serve where
+module Serve where
 
 import Prelude
 import Bucketchain (createServer, listen)
