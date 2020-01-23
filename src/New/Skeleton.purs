@@ -39,7 +39,7 @@ view pageTitle pageContent = do
       meta ! name "theme-color" ! content "#00bfa5"
       -- TODO: This could also be defined in PureScript code using
       --       purescript-css, which could also help with the previous TODO.
-      link ! rel "stylesheet" ! href "css/styles.css"
+      link ! rel "stylesheet" ! href "/css/styles.css"
       title $ text actualPageTitle
     body do
       nav do
