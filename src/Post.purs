@@ -1,103 +1,191 @@
-module Post (Post, parser, viewContent, viewPreview) where
+module Post
+  ( Post
+  , getDateTime
+  , getDescription
+  , getPath
+  , getTitle
+  , getURL
+  , parser
+  , viewContent
+  , viewEntry
+  ) where
 
 import Prelude
-import Data.Array (many)
-import Data.String (trim)
-import Data.String.CodeUnits (fromCharArray)
+import Control.Alt ((<|>))
+import Data.Array ((:), many)
+import Data.Array as Array
+import Data.Char.Unicode as Unicode
+import Data.DateTime (DateTime)
+import Data.Formatter.DateTime (Formatter, FormatterCommand(..))
+import Data.Formatter.DateTime as DateTimeFormatter
+import Data.List as List
+import Data.Maybe (Maybe(..))
+import Data.String.CodeUnits (fromCharArray, toCharArray)
+import Data.String.Common (joinWith, replaceAll, toLower, trim)
+import Data.String.Pattern (Pattern(..), Replacement(..))
+import Data.Tuple (Tuple(..))
+import Node.Path (FilePath)
+import Node.Path as Path
 import Text.Parsing.Parser (ParserT)
-import Text.Parsing.Parser.String
-  ( class StringLike
-  , anyChar
-  , char
-  , noneOf
-  , oneOf
-  , skipSpaces
-  , string
-  )
-import Text.Smolder.HTML
-  ( a
-  , article
-  , h1
-  , h2
-  , li
-  , p
-  , time
-  )
+import Text.Parsing.Parser.Combinators ((<?>), skipMany, try)
+import Text.Parsing.Parser.String (anyChar, char, noneOf, oneOf, string)
+import Text.Smolder.HTML (a, article, h1, h2, li, p, time)
 import Text.Smolder.HTML.Attributes (className, datetime, href)
-import Text.Smolder.Markup (Markup, text, (!))
+import Text.Smolder.Markup (Markup, (!), text)
 
-type Post =
+newtype Post
+  = Post
   { title :: String
   , description :: String
-  , url :: String
-  , machineDate :: String
-  , displayDate :: String
+  , dateTime :: DateTime
   }
 
-viewContent :: forall e. Post -> Markup e -> Markup e
-viewContent post content = article $ do
-  time ! datetime post.machineDate $ text post.displayDate
-  h1 $ a ! href ("/" <> post.url) $ text post.title
-  content
+derive instance eqPost :: Eq Post
 
-viewPreview :: forall e. Post -> Markup e
-viewPreview post = li $ do
-  time ! datetime post.machineDate $ text post.displayDate
-  h2 $ a ! href post.url $ text post.title
-  p ! className "subtitle" $ text post.description
-  a ! href ("/" <> post.url) $ text "Read more &arr;"
+instance ordPost :: Ord Post where
+  compare (Post a) (Post b) = compare a.dateTime b.dateTime
 
-parser ::
-  forall s m.
-  StringLike s =>
-  Monad m =>
-  ParserT s m 
-    { content :: String
-    , date :: String
-    , description :: String
-    , title :: String
-    }
-parser = do
-  -- TODO: This parser needs some work.
-  --       1. It's sensitive to the order of the keys in the metadata.
-  --          It expects a title in the first line, a description in the
-  --          second line and so on. This is far from tragic but it also 
-  --          gives a very bad UX.
-  --       2. This library is probably not used like this.
-  parseSeparator
-  title <- parseSection "title"
-  description <- parseSection "description"
-  date <- parseSection "date"
-  parseSeparator
-  content <- parseContent
-  pure { title: title, description: description, date: date, content: content }
+getTitle :: Post -> String
+getTitle (Post { title }) = title
+
+getDescription :: Post -> String
+getDescription (Post { description }) = description
+
+getDateTime :: Post -> DateTime
+getDateTime (Post { dateTime }) = dateTime
+
+viewEntry :: forall e. Post -> Markup e
+viewEntry (Post post) =
+  li do
+    viewDateTime post.dateTime
+    h2 $ a ! href url $ text post.title
+    p ! className "subtitle" $ text post.description
+    a ! href url $ text "Read more &rarr;"
   where
-  parseSeparator = do
-    skipWhiteSpace
-    skipString "---"
-    skipWhiteSpace
-    assertNewline
+  url = getURL $ Post post
 
-  skipWhiteSpace = void $ many <<< oneOf $ [ ' ' , '\t' ]
+viewContent :: forall e. Post -> Markup e -> Markup e
+viewContent (Post post) content =
+  article do
+    viewDateTime post.dateTime
+    h1 $ a ! href (getURL $ Post post) $ text post.title
+    content
 
-  skipString = void <<< string
+viewDateTime :: forall e. DateTime -> Markup e
+viewDateTime dateTime = time ! datetime machineDate $ text displayDate
+  where
+  displayDate = DateTimeFormatter.format displayDateFormatter dateTime
 
-  skipChar = void <<< char
+  machineDate = DateTimeFormatter.format machineDateFormatter dateTime
 
-  parseSection s = do
-    skipSpaces
-    skipString s
-    skipSpaces
-    skipChar ':'
-    parseSectionContent
+getURL :: Post -> String
+getURL = getPathWithSep "/"
 
-  parseSectionContent = do
-    result <- many $ noneOf [ '\n' ]
-    assertNewline
-    pure <<< trim <<< fromCharArray $ result
+getPath :: Post -> FilePath
+getPath = getPathWithSep Path.sep
 
-  assertNewline = void $ char '\n'
+getPathWithSep :: String -> Post -> String
+getPathWithSep sep (Post { title }) = joinWith sep [ "posts", getSlug title <> ".html" ]
 
-  parseContent = do
-    result <- many anyChar
-    pure <<< fromCharArray $ result
+displayDateFormatter :: Formatter
+displayDateFormatter =
+  List.fromFoldable
+    [ MonthFull
+    , Placeholder " "
+    , DayOfMonthTwoDigits
+    , Placeholder ", "
+    , YearFull
+    ]
+
+machineDateFormatter :: Formatter
+machineDateFormatter =
+  List.fromFoldable
+    [ YearFull
+    , Placeholder "-"
+    , MonthTwoDigits
+    , Placeholder "-"
+    , DayOfMonthTwoDigits
+    ]
+
+-- The logic for creating the slug was taken from here:
+-- https://robertwpearce.com/hakyll-pt-5-generating-custom-post-filenames-from-a-title-slug.html
+getSlug :: String -> String
+getSlug =
+  replaceAll (Pattern "&") (Replacement "and")
+    >>> replaceAll (Pattern "'") (Replacement "")
+    >>> toCharArray
+    >>> map keepAlphaNum
+    >>> fromCharArray
+    >>> toLower
+    >>> words
+    >>> joinWith "-"
+  where
+  keepAlphaNum c
+    | Unicode.isAlphaNum c = c
+    | otherwise = ' '
+
+-- Taken from here:
+-- https://github.com/cdepillabout/purescript-words-lines
+words :: String -> Array String
+words = map fromCharArray <<< go <<< toCharArray
+  where
+  go s = case Array.uncons $ Array.dropWhile Unicode.isSpace s of
+    Nothing -> []
+    Just { head, tail } ->
+      let
+        { init, rest } = Array.span (not Unicode.isSpace) (head : tail)
+      in
+        init : go rest
+
+parser :: forall m. Monad m => ParserT String m (Tuple Post String)
+parser = Tuple <$> metadata <*> content
+  where
+  metadata = do
+    separator
+    -- TODO: Allow to write these fields in any order.
+    -- TODO: Add tags field.
+    title <- section "title" stringContent
+    description <- section "description" stringContent
+    dateTime <- section "date" dateContent
+    separator
+    pure
+      $ Post
+          { title: title
+          , description: description
+          , dateTime: dateTime
+          }
+
+  content = fromCharArray >>> trim <$> many anyChar
+
+  section :: forall a. String -> ParserT String m a -> ParserT String m a
+  section title sectionParser = do
+    skipMany whitespace
+    void $ string title
+    skipMany whitespace
+    void $ char ':'
+    result <- sectionParser
+    void eol
+    pure result
+
+  stringContent = fromCharArray >>> trim <$> many (noneOf [ '\n', '\r' ])
+
+  dateContent = do
+    skipMany whitespace
+    date <- DateTimeFormatter.unformatParser machineDateFormatter
+    skipMany whitespace
+    pure date
+
+  separator = do
+    skipMany whitespace
+    void $ string "---"
+    skipMany whitespace
+    void eol
+
+  whitespace = oneOf [ ' ', '\t' ]
+
+  eol =
+    try (string "\n\r")
+      <|> try (string "\r\n")
+      <|> string "\n"
+      <|> string "\r"
+      <?> "end of line"

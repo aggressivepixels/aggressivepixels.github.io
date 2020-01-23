@@ -1,100 +1,116 @@
-module Main where
+module Main (main) where
 
 import Prelude
-import Control.Monad (whenM)
-import Data.Foldable (for_)
+import Data.Array as Array
+import Data.Either (Either(..))
+import Data.Foldable (fold, for_)
+import Data.Maybe (Maybe(..))
 import Data.Traversable (for)
-import Data.Maybe (Maybe(..), maybe, fromMaybe)
-import Data.Either (Either(..), either)
-import Data.String
-import Data.String.CodeUnits
+import Data.Tuple (Tuple(..))
+import Data.Tuple as Tuple
 import Effect (Effect)
-import Effect.Exception
-import Effect.Class (liftEffect)
-import Effect.Console as Console
-import Node.Path
-import Node.Encoding (Encoding(UTF8))
-import Node.FS.Sync as FS
-import Node.FS.Stats (isDirectory)
-import Text.Markdown.SlamDown
-import Text.Markdown.SlamDown.Smolder
-import Text.Markdown.SlamDown.Parser
-import Text.Smolder.Markup (Markup, text)
-import Text.Smolder.Renderer.String.Extended (renderWithDoctype)
-import Text.Parsing.Parser (runParserT)
-import Skeleton as Skeleton
-import Post (Post)
-import Post as Post
+import Effect.Exception (throw)
 import Index as Index
+import Post as Post
+import Skeleton as Skeleton
+import Node.Encoding (Encoding(..))
+import Node.FS.Stats as Stats
+import Node.FS.Sync as FS
+import Node.Path (FilePath)
+import Node.Path as Path
+import Text.Markdown.SlamDown.Parser (parseMd)
+import Text.Markdown.SlamDown.Smolder (toMarkup)
+import Text.Markdown.SlamDown.Syntax (SlamDown)
+import Text.Parsing.Parser (runParser)
+import Text.Smolder.Renderer.String as StringRenderer
 
--- TODO: This code is gross and mostly imperative. Let's refactor this and
---       take advantage of PureScript's type system.
 main :: Effect Unit
 main = do
-  cleanDistDir
+  -- Clean the dist folder.
+  wipe "dist"
+  -- Copy the static files.
+  copy (Source "static") (Dest "dist")
+  -- Write the CSS.
+  FS.mkdir $ Path.concat [ "dist", "css" ]
+  cssFiles <- Array.sort <$> FS.readdir "css"
+  finalCSS <-
+    fold
+      <$> for cssFiles \f -> do
+          content <- FS.readTextFile UTF8 (Path.concat [ "css", f ])
+          pure $ "/* " <> f <> " */\n\n" <> content <> "\n"
+  FS.writeTextFile UTF8 (Path.concat [ "dist", "css", "styles.css" ]) finalCSS
+  -- Read the posts.
   postsFiles <- FS.readdir "posts"
-  -- TODO: for_ is not stack-safe.
   posts <-
-    for postsFiles \filename -> do
-      content <- FS.readTextFile UTF8 $ "posts" <> "/" <> filename
-      newFilename <- pure $ mkFilename filename
-      rawPost <- runParserT content Post.parser
-      pure $ rawPost
-        <#> \p ->
-            { title: p.title
-            , description: p.description
-            , url: "posts/" <> fromMaybe "" newFilename
-            , machineDate: p.date
-            , displayDate: ""
-            , rawContent: p.content
-            }
-  FS.mkdir $ "dist" <> "/" <> "posts"
-  for_ posts \ep -> do
-    case ep of
-      Left pe -> throw $ show pe
-      Right p -> do
-        content <- pure $ parseContent p.rawContent
-        case content of
-          Left e -> throw $ p.url <> "'s content could not be parsed: " <> e
-          Right markup -> FS.writeTextFile UTF8 ("dist/" <> p.url) page
-            where
-            page =
-              Post.viewContent pagePost markup
-                # Skeleton.wrap (Just pagePost.title)
-                # renderWithDoctype
+    Array.sort
+      <$> for postsFiles \postFile -> do
+          rawContent <- FS.readTextFile UTF8 $ Path.concat [ "posts", postFile ]
+          case runParser rawContent Post.parser of
+            -- TODO: We probably shouldn't throw.
+            Left err -> throw $ "when parsing " <> postFile <> ": " <> show err
+            Right postAndContent -> pure postAndContent
+  -- Write the index.
+  Tuple.fst <$> posts
+    # Index.view
+    # Skeleton.view Nothing
+    # StringRenderer.render
+    # FS.writeTextFile UTF8 (Path.concat [ "dist", "index.html" ])
+  -- Write the posts.
+  FS.mkdir (Path.concat [ "dist", "posts" ])
+  for_ posts \(Tuple post rawMarkdown) -> case parseMd rawMarkdown of
+    Left err -> throw $ "when parsing the content of \"" <> Post.getTitle post <> "\": " <> err
+    Right (markdown :: SlamDown) -> do
+      Post.viewContent post (toMarkup markdown)
+        # Skeleton.view (Just $ Post.getTitle post)
+        # StringRenderer.render
+        # FS.writeTextFile UTF8 (Path.concat [ "dist", Post.getPath post ])
 
-            pagePost =
-              { title: p.title
-              , description: p.description
-              , url: p.url
-              , machineDate: ""
-              , displayDate: ""
-              }
-
-parseContent :: forall e. String -> Either String (Markup e)
-parseContent input = toMarkup <$> result
+wipe :: FilePath -> Effect Unit
+wipe file = do
+  exists <- FS.exists file
+  if exists then
+    doWipe file
+  else
+    pure unit
   where
-  result :: Either String SlamDown
-  result = parseMd input
-
-cleanDistDir :: Effect Unit
-cleanDistDir = do
-  clean dist
-  FS.mkdir dist
-  where
-  dist = "dist"
-
-clean :: String -> Effect Unit
-clean path = do
-  whenM (FS.exists path) do
-    stats <- FS.stat path
-    if isDirectory stats then do
-      files <- FS.readdir path
-      for_ files \f ->
-        clean $ path <> "/" <> f
-      FS.rmdir path
+  doWipe existingFile = do
+    stats <- FS.stat existingFile
+    if Stats.isDirectory stats then
+      doWipeDir existingFile
     else
-      FS.unlink path
+      FS.unlink existingFile
 
-mkFilename :: FilePath -> Maybe FilePath
-mkFilename filename = stripSuffix (Pattern ".md") filename <> pure ".html"
+  doWipeDir dir = do
+    files <- FS.readdir dir
+    for_ files \f -> doWipe $ Path.concat [ dir, f ]
+    FS.rmdir dir
+
+newtype Source
+  = Source FilePath
+
+newtype Dest
+  = Dest FilePath
+
+copy :: Source -> Dest -> Effect Unit
+copy (Source src) (Dest dst) = do
+  dstExists <- FS.exists dst
+  if dstExists then
+    pure unit
+  else
+    FS.mkdir dst
+  doCopyDir src dst
+  where
+  doCopyDir dir existingDst = do
+    files <- FS.readdir dir
+    for_ files \f -> do
+      let
+        srcPath = Path.concat [ dir, f ]
+
+        dstPath = Path.concat [ existingDst, f ]
+      stats <- FS.stat srcPath
+      if Stats.isDirectory stats then do
+        FS.mkdir dstPath
+        doCopyDir srcPath dstPath
+      else do
+        content <- FS.readFile srcPath
+        FS.writeFile dstPath content
