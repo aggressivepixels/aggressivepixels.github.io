@@ -28,7 +28,7 @@ opts =
   }
 
 -- | Middleware that will attempt to serve `/index.html` if the request's URL
--- | is "/".
+-- | is `/`.
 withIndex :: Middleware
 withIndex next = do
   http <- ask
