@@ -52,6 +52,7 @@ view pageTitle pageContent = do
         br
         text "Made with love, coffee and "
         a ! href "http://www.purescript.org/" $ text "PureScript"
+        text "."
         br
         text "Proudly free of JavaScript."
   where
