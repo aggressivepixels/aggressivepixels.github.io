@@ -2,17 +2,23 @@ module Serve where
 
 import Prelude
 import Bucketchain (createServer, listen)
+import Bucketchain.Middleware (Middleware)
+import Bucketchain.Http (requestURL, setRequestURL)
 import Bucketchain.Static (withStatic)
+import Control.Monad.Reader (ask)
 import Data.Maybe (Maybe(..))
 import Data.Time.Duration (Seconds(..))
 import Effect (Effect)
+import Effect.Class (liftEffect)
 import Node.HTTP (ListenOptions, Server)
 
 main :: Effect Unit
 main = server >>= listen opts
 
 server :: Effect Server
-server = createServer $ withStatic { root: "./dist", maxAge: Seconds 86400.0 }
+server =
+  createServer
+    $ withIndex <$> withStatic { root: "./dist", maxAge: Seconds 86400.0 }
 
 opts :: ListenOptions
 opts =
@@ -20,3 +26,15 @@ opts =
   , port: 8080
   , backlog: Nothing
   }
+
+-- | Middleware that will attempt to serve `index.html` if the request's URL
+-- | is "/".
+withIndex :: Middleware
+withIndex next = do
+  http <- ask
+  liftEffect
+    $ if requestURL http == "/" then
+        setRequestURL http "/index.html"
+      else
+        pure unit
+  next
