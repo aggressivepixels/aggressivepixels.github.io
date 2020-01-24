@@ -155,3 +155,7 @@ main {
     padding-right: 1em;
   }
 }
+
+footer p {
+  margin: 0;
+}

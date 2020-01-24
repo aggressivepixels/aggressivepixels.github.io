@@ -5,7 +5,6 @@ import Data.Maybe (Maybe, maybe)
 import Text.Smolder.HTML
   ( a
   , body
-  , br
   , footer
   , head
   , html
@@ -14,6 +13,7 @@ import Text.Smolder.HTML
   , main
   , meta
   , nav
+  , p
   , title
   , ul
   )
@@ -47,14 +47,12 @@ view pageTitle pageContent = do
           li $ a ! className "logo" ! href "/" $ text blogTitle
       main pageContent
       footer do
-        -- TODO: This lines should probably be paragraphs instead.
-        text "Copyright &copy; 2020, Jonathan Hernández."
-        br
-        text "Made with love, coffee and "
-        a ! href "http://www.purescript.org/" $ text "PureScript"
-        text "."
-        br
-        text "Proudly free of JavaScript."
+        p $ text "Copyright &copy; 2020, Jonathan Hernández."
+        p do
+          text "Made with love, coffee and "
+          a ! href "http://www.purescript.org/" $ text "PureScript"
+          text "."
+        p $ text "Proudly free of JavaScript."
   where
   blogTitle = "Aggressive Pixels"
 
