@@ -79,7 +79,7 @@ viewDateTime dateTime = time ! datetime machineDate $ text displayDate
   machineDate = DateTimeFormatter.format machineDateFormatter dateTime
 
 getURL :: Post -> String
-getURL = getPathWithSep "/"
+getURL = (<>) "/" <<< getPathWithSep "/"
 
 getPath :: Post -> FilePath
 getPath = getPathWithSep Path.sep
