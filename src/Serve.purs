@@ -27,7 +27,7 @@ opts =
   , backlog: Nothing
   }
 
--- | Middleware that will attempt to serve `index.html` if the request's URL
+-- | Middleware that will attempt to serve `/index.html` if the request's URL
 -- | is "/".
 withIndex :: Middleware
 withIndex next = do
