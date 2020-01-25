@@ -1,6 +1,7 @@
 module Main (main) where
 
 import Prelude
+import CSS.Render (renderedSheet)
 import Data.Array as Array
 import Data.Either (Either(..))
 import Data.Foldable (fold, for_)
@@ -18,6 +19,7 @@ import Node.FS.Stats as Stats
 import Node.FS.Sync as FS
 import Node.Path (FilePath)
 import Node.Path as Path
+import Style as Style
 import Text.Markdown.SlamDown.Parser (parseMd)
 import Text.Markdown.SlamDown.Smolder (toMarkup)
 import Text.Markdown.SlamDown.Syntax (SlamDown)
@@ -33,12 +35,21 @@ main = do
   -- Write the CSS.
   FS.mkdir $ Path.concat [ "dist", "css" ]
   cssFiles <- Array.sort <$> FS.readdir "css"
-  finalCSS <-
+  vendorCSS <-
     fold
       <$> for cssFiles \f -> do
           content <- FS.readTextFile UTF8 (Path.concat [ "css", f ])
           pure $ "/* " <> f <> " */\n\n" <> content <> "\n"
-  FS.writeTextFile UTF8 (Path.concat [ "dist", "css", "styles.css" ]) finalCSS
+  pageCSS <-
+    case renderedSheet Style.sheet of
+      Just pageCSS ->
+        pure $ "/* page-styles */\n\n" <> pageCSS <> "\n"
+      Nothing ->
+        throw "invalid stylesheet"
+  FS.writeTextFile
+    UTF8
+    (Path.concat [ "dist", "css", "styles.css" ])
+    (vendorCSS <> pageCSS)
   -- Read the posts.
   postsFiles <- FS.readdir "posts"
   posts <-

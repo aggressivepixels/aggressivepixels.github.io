@@ -2,6 +2,7 @@
 , dependencies =
     [ "bucketchain-static"
     , "console"
+    , "css"
     , "datetime"
     , "effect"
     , "formatters"
