@@ -18,7 +18,7 @@ main = server >>= listen opts
 server :: Effect Server
 server =
   createServer
-    $ withIndex <$> withStatic { root: "./dist", maxAge: Seconds 86400.0 }
+    $ withIndex <$> withStatic { root: "./dist", maxAge: Seconds 0.0 }
 
 opts :: ListenOptions
 opts =
