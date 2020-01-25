@@ -1,9 +1,7 @@
 :root {
-  --accent-color: #00bfa5;
-  --accent-color-translucent: #00bfa65b;
-  --accent-color-dark: #009b86;
-  --text-color-primary: #000000de;
-  --text-color-secondary: #000000aa;
+  --accent-color: hsl(217, 71%, 53%);
+  --text-color-primary: rgba(0, 0, 0, 0.87);
+  --text-color-secondary: rgba(0, 0, 0, 0.6);
 }
 
 body {
@@ -12,7 +10,7 @@ body {
 }
 
 a:any-link {
-  color: var(--accent-color-dark);
+  color: var(--accent-color);
 }
 
 h1,
@@ -27,13 +25,12 @@ h6 {
 footer {
   background-color: hsl(0, 0%, 96%);
   border-top: 1px solid hsl(0, 0%, 86%);
-  line-height: 1.75;
   padding: 1em;
   text-align: center;
 }
 
 footer p {
-  margin: 0;
+  margin: 0.5em 0;
 }
 
 pre {
@@ -41,7 +38,7 @@ pre {
   overflow: auto;
   word-wrap: normal;
   white-space: pre;
-  background-color: #ebebeb;
+  background-color: hsl(0, 0%, 96%);
   border-radius: 1em;
   padding: 1em;
   margin-top: 0.5em;
@@ -53,7 +50,8 @@ code {
 }
 
 nav {
-  background-color: var(--accent-color);
+  background-color: hsl(0, 0%, 96%);
+  border-bottom: 1px solid hsl(0, 0%, 86%);
 }
 
 nav ul {
@@ -66,6 +64,7 @@ nav ul {
 
 nav ul li {
   padding-bottom: 1em;
+  text-align: center;
 }
 
 nav ul li a:any-link {
@@ -79,11 +78,8 @@ nav ul li a:hover {
 
 nav ul li a.logo {
   color: var(--text-color-primary);
-  font-size: 1.5em;
-  font-variant-caps: small-caps;
-  -moz-font-feature-settings: "smcp";
-  -webkit-font-feature-settings: "smcp";
-  font-feature-settings: "smcp";
+  font-size: 1.25em;
+  font-weight: bold;
 }
 
 article {
