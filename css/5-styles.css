@@ -25,14 +25,15 @@ h6 {
 }
 
 footer {
-  background-color: var(--accent-color);
+  background-color: hsl(0, 0%, 96%);
+  border-top: 1px solid hsl(0, 0%, 86%);
   line-height: 1.75;
-  text-align: center;
   padding: 1em;
+  text-align: center;
 }
 
-footer a:any-link {
-  color: var(--text-color-primary);
+footer p {
+  margin: 0;
 }
 
 pre {
@@ -154,8 +155,4 @@ main {
     padding-left: 1em;
     padding-right: 1em;
   }
-}
-
-footer p {
-  margin: 0;
 }
