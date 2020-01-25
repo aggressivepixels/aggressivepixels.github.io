@@ -1,12 +1,12 @@
 :root {
-  --accent-color: hsl(217, 71%, 53%);
+  --accent-color: rgb(50, 115, 220);
   --text-color-primary: rgba(0, 0, 0, 0.87);
   --text-color-secondary: rgba(0, 0, 0, 0.6);
 }
 
 body {
   color: var(--text-color-secondary);
-  font-family: "Merriweather", serif;
+  font-family: "Rubik", sans-serif;
 }
 
 a:any-link {
@@ -20,11 +20,12 @@ h4,
 h5,
 h6 {
   color: var(--text-color-primary);
+  font-family: "Rajdhani", sans-serif;
 }
 
 footer {
-  background-color: hsl(0, 0%, 96%);
-  border-top: 1px solid hsl(0, 0%, 86%);
+  background-color: rgb(245, 245, 245);
+  border-top: 1px solid rgb(219, 219, 219);
   padding: 1em;
   text-align: center;
 }
@@ -38,7 +39,7 @@ pre {
   overflow: auto;
   word-wrap: normal;
   white-space: pre;
-  background-color: hsl(0, 0%, 96%);
+  background-color: rgb(245, 245, 245);
   border-radius: 1em;
   padding: 1em;
   margin-top: 0.5em;
@@ -50,8 +51,8 @@ code {
 }
 
 nav {
-  background-color: hsl(0, 0%, 96%);
-  border-bottom: 1px solid hsl(0, 0%, 86%);
+  background-color: rgb(245, 245, 245);
+  border-bottom: 1px solid rgb(219, 219, 219);
 }
 
 nav ul {
@@ -63,8 +64,7 @@ nav ul {
 }
 
 nav ul li {
-  padding-bottom: 1em;
-  text-align: center;
+  padding-bottom: 0.8em;
 }
 
 nav ul li a:any-link {
@@ -77,25 +77,15 @@ nav ul li a:hover {
 }
 
 nav ul li a.logo {
-  color: var(--text-color-primary);
-  font-size: 1.25em;
+  color: var(--accent-color);
+  font-family: "Rajdhani", sans-serif;
+  font-size: 1.5em;
+  text-transform: uppercase;
   font-weight: bold;
 }
 
 article {
-  padding-left: 1em;
-  padding-right: 1em;
-  padding-top: 1.5em;
-  padding-bottom: 1.5em;
-}
-
-article h1 a:any-link {
-  color: var(--text-color-primary);
-  text-decoration: none;
-}
-
-article h1 a:hover {
-  text-decoration: underline;
+  padding: 1.5em 1em;
 }
 
 article time + h1 {

@@ -36,7 +36,7 @@ view pageTitle pageContent = do
       meta ! charset "utf-8"
       meta ! name "viewport" ! content "width=device-width,initial-scale=1"
       -- TODO: This color should be kept in sync with the CSS.
-      meta ! name "theme-color" ! content "hsl(217, 71%, 53%)"
+      meta ! name "theme-color" ! content "rgb(50, 115, 220)"
       -- TODO: This could also be defined in PureScript code using
       --       purescript-css, which could also help with the previous TODO.
       link ! rel "stylesheet" ! href "/css/styles.css"
