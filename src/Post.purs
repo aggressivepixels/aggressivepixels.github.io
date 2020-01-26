@@ -3,7 +3,7 @@ module Post
   , viewContent, viewEntry
   ) where
 
-import Prelude
+import Prelude hiding (div)
 import Control.Alt ((<|>))
 import Data.Array (many, (:))
 import Data.Array as Array
@@ -23,7 +23,7 @@ import Styles as Styles
 import Text.Parsing.Parser (ParserT)
 import Text.Parsing.Parser.Combinators (skipMany, try, (<?>))
 import Text.Parsing.Parser.String (anyChar, char, noneOf, oneOf, string)
-import Text.Smolder.HTML (a, article, h1, h2, li, p, time)
+import Text.Smolder.HTML (a, article, div, h1, h2, li, p, time)
 import Text.Smolder.HTML.Attributes (className, datetime, href)
 import Text.Smolder.Markup (Markup, text, (!))
 
@@ -60,10 +60,11 @@ viewEntry (Post post) =
 
 viewContent :: forall e. Post -> Markup e -> Markup e
 viewContent (Post post) content =
-  article do
+  article ! className Styles.postClass $ do
     viewDateTime post.dateTime
-    h1 $ a ! href (getURL $ Post post) $ text post.title
-    content
+    h1 ! className Styles.postTitleClass $ a ! href (getURL $ Post post) $
+      text post.title
+    div ! className Styles.postContentClass $ content
 
 viewDateTime :: forall e. DateTime -> Markup e
 viewDateTime dateTime =

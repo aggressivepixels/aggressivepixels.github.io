@@ -1,6 +1,7 @@
 module Styles
-  ( accentColor, postDateClass, postEntryClass, postEntryDescriptionClass
-  , postEntryTitleClass, postListClass, sheet
+  ( accentColor, postClass, postContentClass, postDateClass, postEntryClass
+  , postEntryDescriptionClass, postEntryTitleClass, postListClass
+  , postTitleClass, sheet
   ) where
 
 import Prelude
@@ -22,6 +23,7 @@ import CSS.FontStyle (fontStyle, italic)
 import CSS.ListStyle.Type (listStyleType)
 import CSS.Media (screen)
 import CSS.Overflow (overflow, overflowAuto)
+import CSS.Pseudo (firstChild)
 import CSS.Size (Abs, Size, em, nil, pct, px, unitless)
 import CSS.Text.Transform (textTransform, uppercase)
 import CSS.Text.Whitespace (textWhitespace, whitespacePre)
@@ -62,6 +64,15 @@ postEntryDescriptionClass = "post-entry-description"
 
 postDateClass :: String
 postDateClass = "post-date"
+
+postClass :: String
+postClass = "post"
+
+postContentClass :: String
+postContentClass = "post-content"
+
+postTitleClass :: String
+postTitleClass = "post-title"
 
 -- STYLESHEETS
 
@@ -252,6 +263,14 @@ styles = do
   star & byClass postEntryDescriptionClass ? do
     marginTop nil
     marginBottom (em 0.25)
+
+  star & byClass postTitleClass ? do
+    fontSize (em 2.5)
+    marginTop nil
+    marginBottom nil
+
+  (star & byClass postContentClass) |* (p & firstChild) ?
+    marginTop nil
 
   (html <> body) ?
     height (pct 100.0)
