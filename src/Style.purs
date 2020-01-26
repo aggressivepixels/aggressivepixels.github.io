@@ -22,7 +22,15 @@ separatorColor = rgb 219 219 219
 darkerBackgroundColor = rgb 245 245 245
 
 sheet :: Rendered
-sheet = render $ fonts *> styles
+sheet = render $ fonts *> resetBorderBox *> styles
+
+resetBorderBox :: CSS
+resetBorderBox = do
+  html ?
+    boxSizing borderBox
+
+  (star <> star & before <> star & after) ?
+    boxSizing inherit
 
 fonts :: CSS
 fonts = rubik *> rajdhani *> firaMono
