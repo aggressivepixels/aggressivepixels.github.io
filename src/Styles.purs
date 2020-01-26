@@ -1,4 +1,4 @@
-module Styles (sheet, accentColor) where
+module Styles (accentColor, postListClass, sheet) where
 
 import Prelude
 
@@ -26,6 +26,8 @@ import CSS.TextAlign (center, textAlign)
 import Data.Maybe (Maybe(..))
 import Data.NonEmpty (singleton, (:|))
 
+-- COLORS
+
 primaryTextColor :: Color
 primaryTextColor = rgba 0 0 0 0.87
 
@@ -40,6 +42,13 @@ separatorColor = rgb 219 219 219
 
 darkerBackgroundColor :: Color
 darkerBackgroundColor = rgb 245 245 245
+
+-- CLASSES
+
+postListClass :: String
+postListClass = "post-list"
+
+-- STYLESHEETS
 
 sheet :: Rendered
 sheet = render $ fonts *> styles
@@ -208,21 +217,21 @@ styles = do
   article |* (time |+ h1) ?
     marginTop nil
 
-  ul & byClass "posts" ? do
+  ul & byClass postListClass ? do
     listStyleType none
     margin nil nil nil nil
     paddingLeft (em 1.0)
     paddingRight (em 1.0)
     paddingTop (em 1.5)
 
-  (ul & byClass "posts") |* li ?
+  (ul & byClass postListClass) |* li ?
     paddingBottom (em 2.0)
 
-  (ul & byClass "posts") |* (li |* (time |+ h2)) ? do
+  (ul & byClass postListClass) |* (li |* (time |+ h2)) ? do
     marginTop (em 0.25)
     marginBottom (em 0.25)
 
-  (ul & byClass "posts") |* (li |* (p & byClass "subtitle")) ? do
+  (ul & byClass postListClass) |* (li |* (p & byClass "subtitle")) ? do
     margin nil nil nil nil
     marginBottom (em 0.25)
     color primaryTextColor
@@ -250,6 +259,8 @@ desktopStyle = do
   nav |* (ul |* li) ? do
     paddingLeft (em 1.0)
     paddingRight (em 1.0)
+
+-- HELPER CSS FUNCTIONS
 
 wordWrap :: String -> CSS
 wordWrap = key $ fromString "word-wrap"
