@@ -129,6 +129,7 @@ styles = do
   (h1 <> h2 <> h3 <> h4 <> h5 <> h6) ? do
     color primaryTextColor
     fontFamily [ "Rajdhani" ] (singleton sansSerif)
+    fontWeight (FontWeight 500)
 
   footer ? do
     backgroundColor darkerBackgroundColor
