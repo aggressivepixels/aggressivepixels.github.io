@@ -270,6 +270,9 @@ styles = do
   (star & byClass postTitleClass) |* (a & anyLink) ?
     textDecoration noneTextDecoration
 
+  star & byClass postContentClass ?
+    lineHeight (unitless 1.75)
+
   (star & byClass postContentClass) |* (p & firstChild) ?
     marginTop nil
 
