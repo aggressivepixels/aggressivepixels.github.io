@@ -48,6 +48,12 @@ separatorColor = rgb 219 219 219
 darkerBackgroundColor :: Color
 darkerBackgroundColor = rgb 245 245 245
 
+navPrimaryTextColor :: Color
+navPrimaryTextColor = rgb 255 255 255
+
+navSecondaryTextColor :: Color
+navSecondaryTextColor = rgba 255 255 255 0.6
+
 -- CLASSES
 
 postListClass :: String
@@ -216,16 +222,18 @@ styles = do
     fontFamily [ "Fira Mono" ] (singleton monospace)
 
   nav ? do
-    backgroundColor darkerBackgroundColor
-    borderBottom solid (px 1.0) separatorColor
+    color navSecondaryTextColor
+    backgroundColor accentColor
 
   star & byClass logoClass ? do
-    color accentColor
     fontFamily [ "Rajdhani" ] (singleton sansSerif)
     fontSize (em 1.5)
     textTransform uppercase
     textDecoration noneTextDecoration
     fontWeight $ FontWeight 500
+
+  (star & byClass logoClass) & anyLink ?
+    color navPrimaryTextColor
 
   article ? do
     paddingTop (em 1.5)
