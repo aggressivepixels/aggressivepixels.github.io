@@ -15,7 +15,7 @@ import CSS
   , footer, fromString, h1, h2, h3, h4, h5, h6, height, html, key, lineHeight
   , main, margin, marginBottom, marginLeft, marginRight, marginTop, nav
   , noneTextDecoration, p, padding, paddingBottom, paddingLeft, paddingRight
-  , paddingTop, pre, query, render, rgb, rgba, sansSerif, solid, star
+  , paddingTop, pre, query, render, rgb, rgba, sansSerif, solid, star, strong
   , textDecoration, value, width, (&), (?), (|*)
   )
 import CSS.Common (auto, inherit, none, normal)
@@ -195,6 +195,9 @@ styles = do
   (h1 <> h2 <> h3 <> h4 <> h5 <> h6) ? do
     color primaryTextColor
     fontFamily [ "Rajdhani" ] (singleton sansSerif)
+    fontWeight (FontWeight 500)
+
+  strong ?
     fontWeight (FontWeight 500)
 
   footer ? do
