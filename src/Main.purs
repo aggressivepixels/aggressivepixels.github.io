@@ -4,7 +4,7 @@ import Prelude
 import CSS.Render (renderedSheet)
 import Data.Array as Array
 import Data.Either (Either(..))
-import Data.Foldable (fold, for_)
+import Data.Foldable (for_)
 import Data.Maybe (Maybe(..))
 import Data.Traversable (for)
 import Data.Tuple (Tuple(..))
@@ -34,22 +34,13 @@ main = do
   copy (Source "static") (Dest "dist")
   -- Write the CSS.
   FS.mkdir $ Path.concat [ "dist", "css" ]
-  cssFiles <- Array.sort <$> FS.readdir "css"
-  vendorCSS <-
-    fold
-      <$> for cssFiles \f -> do
-          content <- FS.readTextFile UTF8 (Path.concat [ "css", f ])
-          pure $ "/* " <> f <> " */\n\n" <> content <> "\n"
-  pageCSS <-
+  css <-
     case renderedSheet Style.sheet of
-      Just pageCSS ->
-        pure $ "/* page-styles */\n\n" <> pageCSS <> "\n"
+      Just renderedCSS ->
+        pure renderedCSS
       Nothing ->
         throw "invalid stylesheet"
-  FS.writeTextFile
-    UTF8
-    (Path.concat [ "dist", "css", "styles.css" ])
-    (vendorCSS <> pageCSS)
+  FS.writeTextFile UTF8 (Path.concat [ "dist", "css", "styles.css" ]) css
   -- Read the posts.
   postsFiles <- FS.readdir "posts"
   posts <-

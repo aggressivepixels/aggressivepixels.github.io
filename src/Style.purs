@@ -6,6 +6,7 @@ import CSS hiding (FontWeight)
 import CSS.Common
 import CSS.FontStyle
 import CSS.ListStyle.Type
+import CSS.Media
 import CSS.Overflow
 import CSS.Size
 import CSS.Text.Whitespace
@@ -22,15 +23,7 @@ separatorColor = rgb 219 219 219
 darkerBackgroundColor = rgb 245 245 245
 
 sheet :: Rendered
-sheet = render $ fonts *> resetBorderBox *> styles
-
-resetBorderBox :: CSS
-resetBorderBox = do
-  html ?
-    boxSizing borderBox
-
-  (star <> star & before <> star & after) ?
-    boxSizing inherit
+sheet = render $ fonts *> styles
 
 fonts :: CSS
 fonts = rubik *> rajdhani *> firaMono
@@ -86,7 +79,6 @@ rajdhani = do
   fontFace do
     fontFaceFamily "Rajdhani"
     fontStyle normal
-    -- TODO: This is awkward. Should weight take an Int instead?
     fontWeight $ FontWeight 400
     fontFaceSrc $
       FontFaceSrcLocal "Rajdhani Regular" :|
@@ -120,7 +112,14 @@ firaMono = fontFace do
 
 styles :: CSS
 styles = do
+  html ?
+    boxSizing borderBox
+
+  (star <> star & before <> star & after) ?
+    boxSizing inherit
+
   body ? do
+    margin nil nil nil nil
     color secondaryTextColor
     fontFamily [ "Rubik" ] (singleton sansSerif)
 
@@ -219,6 +218,19 @@ styles = do
     flexGrow 1
     lineHeight (unitless 1.5)
 
+  query screen (singleton $ minWidth (px 800.0)) desktopStyle
+
+desktopStyle :: CSS
+desktopStyle = do
+  (main <> nav |* (ul |* li)) ? do
+    marginLeft auto
+    marginRight auto
+    width (px 800.0)
+
+  nav |* (ul |* li) ? do
+    paddingLeft (em 1.0)
+    paddingRight (em 1.0)
+
 wordWrap :: String -> CSS
 wordWrap = key $ fromString "word-wrap"
 
@@ -227,6 +239,9 @@ monospace = GenericFontFamily $ fromString "monospace"
 
 time :: Selector
 time = fromString "time"
+
+minWidth :: Size Abs -> Feature
+minWidth = Feature "min-width" <<< Just <<< value
 
 -- Unfortunately, the CSS library's weight function takes a Number and not an
 -- Int, which then gets written as a floating number instead of an integer.
