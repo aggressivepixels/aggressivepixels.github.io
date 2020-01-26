@@ -19,7 +19,7 @@ import Node.FS.Stats as Stats
 import Node.FS.Sync as FS
 import Node.Path (FilePath)
 import Node.Path as Path
-import Style as Style
+import Styles as Styles
 import Text.Markdown.SlamDown.Parser (parseMd)
 import Text.Markdown.SlamDown.Smolder (toMarkup)
 import Text.Markdown.SlamDown.Syntax (SlamDown)
@@ -35,7 +35,7 @@ main = do
   -- Write the CSS.
   FS.mkdir $ Path.concat [ "dist", "css" ]
   css <-
-    case renderedSheet Style.sheet of
+    case renderedSheet Styles.sheet of
       Just renderedCSS ->
         pure renderedCSS
       Nothing ->

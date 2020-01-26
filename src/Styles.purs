@@ -1,4 +1,4 @@
-module Style (sheet, accentColor) where
+module Styles (sheet, accentColor) where
 
 import Prelude
 
