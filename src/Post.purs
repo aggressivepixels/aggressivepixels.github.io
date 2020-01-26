@@ -5,7 +5,7 @@ module Post
 
 import Prelude
 import Control.Alt ((<|>))
-import Data.Array ((:), many)
+import Data.Array (many, (:))
 import Data.Array as Array
 import Data.Char.Unicode as Unicode
 import Data.DateTime (DateTime)
@@ -20,11 +20,11 @@ import Data.Tuple (Tuple(..))
 import Node.Path (FilePath)
 import Node.Path as Path
 import Text.Parsing.Parser (ParserT)
-import Text.Parsing.Parser.Combinators ((<?>), skipMany, try)
+import Text.Parsing.Parser.Combinators (skipMany, try, (<?>))
 import Text.Parsing.Parser.String (anyChar, char, noneOf, oneOf, string)
 import Text.Smolder.HTML (a, article, h1, h2, li, p, time)
 import Text.Smolder.HTML.Attributes (className, datetime, href)
-import Text.Smolder.Markup (Markup, (!), text)
+import Text.Smolder.Markup (Markup, text, (!))
 
 newtype Post
   = Post
