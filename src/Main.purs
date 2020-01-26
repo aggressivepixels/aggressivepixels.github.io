@@ -48,22 +48,26 @@ main = do
       <$> for postsFiles \postFile -> do
           rawContent <- FS.readTextFile UTF8 $ Path.concat [ "posts", postFile ]
           case runParser rawContent Post.parser of
-            -- TODO: We probably shouldn't throw.
             Left err -> throw $ "when parsing " <> postFile <> ": " <> show err
             Right postAndContent -> pure postAndContent
   -- Write the index.
-  Tuple.fst <$> posts
-    # Index.view
-    # Skeleton.view Nothing
+  Skeleton.view
+    { title: Nothing
+    , description: Just "Jonathan Hernández' personal blog"
+    , content: Index.view $ Tuple.fst <$> posts
+    }
     # StringRenderer.render
     # FS.writeTextFile UTF8 (Path.concat [ "dist", "index.html" ])
   -- Write the posts.
   FS.mkdir (Path.concat [ "dist", "posts" ])
   for_ posts \(Tuple post rawMarkdown) -> case parseMd rawMarkdown of
     Left err -> throw $ "when parsing the content of \"" <> Post.getTitle post <> "\": " <> err
-    Right (markdown :: SlamDown) -> do
-      Post.viewContent post (toMarkup markdown)
-        # Skeleton.view (Just $ Post.getTitle post)
+    Right (markdown :: SlamDown) ->
+      Skeleton.view
+        { title: Just $ Post.getTitle post
+        , description: Just $ Post.getDescription post
+        , content: Post.viewContent post (toMarkup markdown)
+        }
         # StringRenderer.render
         # FS.writeTextFile UTF8 (Path.concat [ "dist", Post.getPath post ])
 

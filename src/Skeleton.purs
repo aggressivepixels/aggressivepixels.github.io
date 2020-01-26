@@ -3,7 +3,7 @@ module Skeleton (view) where
 import Prelude hiding (div)
 
 import CSS.Color as Color
-import Data.Maybe (Maybe, maybe)
+import Data.Maybe (Maybe(..), maybe)
 import Styles as Styles
 import Text.Smolder.HTML
   ( a, body, div, footer, head, html, link, main, meta, nav, p, title
@@ -13,8 +13,13 @@ import Text.Smolder.HTML.Attributes
   )
 import Text.Smolder.Markup (Markup, doctype, text, (!))
 
-view :: forall e. Maybe String -> Markup e -> Markup e
-view pageTitle pageContent = do
+view ::
+  forall e.
+  { title :: Maybe String
+  , description :: Maybe String
+  , content :: Markup e
+  } -> Markup e
+view page = do
   doctype "html"
   html ! lang "en" $ do
     head do
@@ -26,11 +31,17 @@ view pageTitle pageContent = do
       --       purescript-css, which could also help with the previous TODO.
       link ! rel "stylesheet" ! href "/css/styles.css"
       title $ text actualPageTitle
+      meta ! name "author" ! content "Jonathan Hernández"
+      case page.description of
+        Just description ->
+          meta ! name "description" ! content description
+        Nothing ->
+          text ""
     body do
       nav do
         div ! className Styles.navContentClass $ do
           a ! className Styles.logoClass ! href "/" $ text blogTitle
-      main pageContent
+      main page.content
       footer do
         p $ text "Copyright &copy; 2020, Jonathan Hernández."
         p do
@@ -40,5 +51,4 @@ view pageTitle pageContent = do
         p $ text "Proudly free of JavaScript."
   where
   blogTitle = "Aggressive Pixels"
-
-  actualPageTitle = maybe blogTitle (_ <> " " <> "&mdash;" <> " " <> blogTitle) pageTitle
+  actualPageTitle = maybe blogTitle (_ <> " " <> "&mdash;" <> " " <> blogTitle) page.title
