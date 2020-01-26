@@ -2,19 +2,29 @@ module Style (sheet, accentColor) where
 
 import Prelude
 
-import CSS hiding (FontWeight)
-import CSS.Common
-import CSS.FontStyle
-import CSS.ListStyle.Type
-import CSS.Media
-import CSS.Overflow
-import CSS.Size
-import CSS.Text.Whitespace
+import CSS
+  ( class Val, CSS, Color, Feature(..), FontFaceFormat(..), FontFaceSrc(..)
+  , GenericFontFamily(..), Rendered, Selector, a, after, anyLink, article
+  , backgroundColor, before, body, borderBottom, borderBox, borderRadius
+  , borderTop, boxSizing, byClass, code, color, column, display, flex
+  , flexDirection, flexGrow, fontFace, fontFaceFamily, fontFaceSrc, fontFamily
+  , fontSize, footer, fromString, h1, h2, h3, h4, h5, h6, height, html, key, li
+  , lineHeight, main, margin, marginBottom, marginLeft, marginRight, marginTop
+  , nav, noneTextDecoration, p, padding, paddingBottom, paddingLeft
+  , paddingRight, paddingTop, pre, query, render, rgb, rgba, sansSerif, solid
+  , star, textDecoration, ul, value, width, (&), (?), (|*), (|+)
+  )
+import CSS.Common (auto, inherit, none, normal)
+import CSS.FontStyle (fontStyle, italic)
+import CSS.ListStyle.Type (listStyleType)
+import CSS.Media (screen)
+import CSS.Overflow (overflow, overflowAuto)
+import CSS.Size (Abs, Size, em, nil, pct, px, unitless)
+import CSS.Text.Whitespace (textWhitespace, whitespacePre)
 import CSS.TextAlign as TA
-import CSS.Text.Transform
-import Data.Int as Int
+import CSS.Text.Transform (textTransform, uppercase)
 import Data.Maybe (Maybe(..))
-import Data.NonEmpty ((:|), singleton)
+import Data.NonEmpty (singleton, (:|))
 
 primaryTextColor :: Color
 primaryTextColor =
