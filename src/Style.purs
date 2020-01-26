@@ -21,7 +21,7 @@ import CSS.Media (screen)
 import CSS.Overflow (overflow, overflowAuto)
 import CSS.Size (Abs, Size, em, nil, pct, px, unitless)
 import CSS.Text.Whitespace (textWhitespace, whitespacePre)
-import CSS.TextAlign as TA
+import CSS.TextAlign (center, textAlign)
 import CSS.Text.Transform (textTransform, uppercase)
 import Data.Maybe (Maybe(..))
 import Data.NonEmpty (singleton, (:|))
@@ -154,7 +154,7 @@ styles = do
     backgroundColor darkerBackgroundColor
     borderTop solid (px 1.0) separatorColor
     padding (em 1.0) (em 1.0) (em 1.0) (em 1.0)
-    TA.textAlign TA.center
+    textAlign center
 
   footer |* p ? do
     marginTop (em 0.5)
