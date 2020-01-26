@@ -266,7 +266,7 @@ styles = do
 
   star & byClass postEntryDescriptionClass ? do
     marginTop nil
-    marginBottom (em 0.25)
+    marginBottom (em 0.5)
 
   star & byClass postTitleClass ? do
     fontSize (em 2.5)
@@ -275,7 +275,7 @@ styles = do
   (star & byClass postTitleClass) |* (a & anyLink) ?
     textDecoration noneTextDecoration
 
-  star & byClass postContentClass ?
+  (star & byClass postContentClass) |* p ?
     lineHeight (unitless 1.75)
 
   (star & byClass postContentClass) |* (p & firstChild) ?
@@ -290,7 +290,6 @@ styles = do
 
   main ? do
     flexGrow 1
-    lineHeight (unitless 1.5)
 
   star & byClass navContentClass ? do
     padding (em 0.75) (em 1.0) (em 0.6) (em 1.0)
