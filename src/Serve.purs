@@ -1,4 +1,4 @@
-module Serve where
+module Serve (main) where
 
 import Prelude
 import Bucketchain (createServer, listen)

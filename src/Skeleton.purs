@@ -3,28 +3,10 @@ module Skeleton (view) where
 import Prelude
 import Data.Maybe (Maybe, maybe)
 import Text.Smolder.HTML
-  ( a
-  , body
-  , footer
-  , head
-  , html
-  , li
-  , link
-  , main
-  , meta
-  , nav
-  , p
-  , title
-  , ul
+  ( a, body, footer, head, html, li, link, main, meta, nav, p, title, ul
   )
 import Text.Smolder.HTML.Attributes
-  ( charset
-  , className
-  , content
-  , href
-  , lang
-  , name
-  , rel
+  ( charset, className, content, href, lang, name, rel
   )
 import Text.Smolder.Markup (Markup, (!), doctype, text)
 

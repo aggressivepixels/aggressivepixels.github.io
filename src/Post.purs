@@ -1,13 +1,6 @@
 module Post
-  ( Post
-  , getDateTime
-  , getDescription
-  , getPath
-  , getTitle
-  , getURL
-  , parser
-  , viewContent
-  , viewEntry
+  ( Post, getDateTime, getDescription, getPath, getTitle, getURL, parser
+  , viewContent, viewEntry
   ) where
 
 import Prelude
