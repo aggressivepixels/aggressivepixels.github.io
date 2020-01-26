@@ -1,6 +1,7 @@
 module Main (main) where
 
 import Prelude
+import Control.Monad.Trampoline (runTrampoline)
 import CSS.Render (renderedSheet)
 import Data.Array as Array
 import Data.Either (Either(..))
@@ -23,7 +24,7 @@ import Styles as Styles
 import Text.Markdown.SlamDown.Parser (parseMd)
 import Text.Markdown.SlamDown.Smolder (toMarkup)
 import Text.Markdown.SlamDown.Syntax (SlamDown)
-import Text.Parsing.Parser (runParser)
+import Text.Parsing.Parser (runParserT)
 import Text.Smolder.Renderer.String as StringRenderer
 
 main :: Effect Unit
@@ -47,7 +48,7 @@ main = do
     Array.sort
       <$> for postsFiles \postFile -> do
           rawContent <- FS.readTextFile UTF8 $ Path.concat [ "posts", postFile ]
-          case runParser rawContent Post.parser of
+          case runTrampoline <<< runParserT rawContent $ Post.parser of
             Left err -> throw $ "when parsing " <> postFile <> ": " <> show err
             Right postAndContent -> pure postAndContent
   -- Write the index.
