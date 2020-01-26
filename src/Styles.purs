@@ -1,7 +1,7 @@
 module Styles
-  ( accentColor, postClass, postContentClass, postDateClass, postEntryClass
-  , postEntryDescriptionClass, postEntryTitleClass, postListClass
-  , postTitleClass, sheet
+  ( accentColor, logoClass, navContentClass, postClass, postContentClass
+  , postDateClass, postEntryClass, postEntryDescriptionClass
+  , postEntryTitleClass, postListClass, postTitleClass, sheet
   ) where
 
 import Prelude
@@ -16,7 +16,7 @@ import CSS
   , lineHeight, main, margin, marginBottom, marginLeft, marginRight, marginTop
   , nav, noneTextDecoration, p, padding, paddingBottom, paddingLeft
   , paddingRight, paddingTop, pre, query, render, rgb, rgba, sansSerif, solid
-  , star, textDecoration, ul, value, width, (&), (?), (|*), (|+)
+  , star, textDecoration, ul, value, width, (&), (?), (|*)
   )
 import CSS.Common (auto, inherit, none, normal)
 import CSS.FontStyle (fontStyle, italic)
@@ -73,6 +73,12 @@ postContentClass = "post-content"
 
 postTitleClass :: String
 postTitleClass = "post-title"
+
+navContentClass :: String
+navContentClass = "nav-content"
+
+logoClass :: String
+logoClass = "logo"
 
 -- STYLESHEETS
 
@@ -213,25 +219,12 @@ styles = do
     backgroundColor darkerBackgroundColor
     borderBottom solid (px 1.0) separatorColor
 
-  nav |* ul ? do
-    listStyleType none
-    margin nil nil nil nil
-    paddingLeft (em 1.0)
-    paddingRight (em 1.0)
-    paddingTop (em 1.0)
-
-  nav |* (ul |* li) ?
-    paddingBottom (em 0.8)
-
-  nav |* (ul |* (li |* (a & anyLink))) ? do
-    color secondaryTextColor
-    textDecoration noneTextDecoration
-
-  nav |* (ul |* (li |* (a & byClass "logo"))) ? do
+  star & byClass logoClass ? do
     color accentColor
     fontFamily [ "Rajdhani" ] (singleton sansSerif)
     fontSize (em 1.5)
     textTransform uppercase
+    textDecoration noneTextDecoration
     fontWeight $ FontWeight 500
 
   article ? do
@@ -239,9 +232,6 @@ styles = do
     paddingBottom (em 1.5)
     paddingLeft (em 1.0)
     paddingRight (em 1.0)
-
-  article |* (time |+ h1) ?
-    marginTop nil
 
   star & byClass postListClass ? do
     listStyleType none
@@ -283,18 +273,17 @@ styles = do
     flexGrow 1
     lineHeight (unitless 1.5)
 
+  star & byClass navContentClass ? do
+    padding (em 0.75) (em 1.0) (em 0.6) (em 1.0)
+
   query screen (singleton $ minWidth (px 800.0)) desktopStyle
 
 desktopStyle :: CSS
 desktopStyle = do
-  (main <> nav |* (ul |* li)) ? do
+  (main <> (star & byClass navContentClass)) ? do
     marginLeft auto
     marginRight auto
     width (px 800.0)
-
-  nav |* (ul |* li) ? do
-    paddingLeft (em 1.0)
-    paddingRight (em 1.0)
 
 -- HELPER CSS FUNCTIONS
 

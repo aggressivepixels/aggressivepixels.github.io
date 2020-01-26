@@ -1,12 +1,12 @@
 module Skeleton (view) where
 
-import Prelude
+import Prelude hiding (div)
 
 import CSS.Color as Color
 import Data.Maybe (Maybe, maybe)
 import Styles as Styles
 import Text.Smolder.HTML
-  ( a, body, footer, head, html, li, link, main, meta, nav, p, title, ul
+  ( a, body, div, footer, head, html, link, main, meta, nav, p, title
   )
 import Text.Smolder.HTML.Attributes
   ( charset, className, content, href, lang, name, rel
@@ -28,8 +28,8 @@ view pageTitle pageContent = do
       title $ text actualPageTitle
     body do
       nav do
-        ul do
-          li $ a ! className "logo" ! href "/" $ text blogTitle
+        div ! className Styles.navContentClass $ do
+          a ! className Styles.logoClass ! href "/" $ text blogTitle
       main pageContent
       footer do
         p $ text "Copyright &copy; 2020, Jonathan Hernández."
