@@ -275,5 +275,4 @@ instance valFontWeight :: Val FontWeight where
   value (FontWeight weight) = value $ show weight
 
 fontWeight :: FontWeight -> CSS
-fontWeight =
-  key $ fromString "font-weight"
+fontWeight = key $ fromString "font-weight"
