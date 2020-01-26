@@ -19,6 +19,7 @@ import Data.String.Pattern (Pattern(..), Replacement(..))
 import Data.Tuple (Tuple(..))
 import Node.Path (FilePath)
 import Node.Path as Path
+import Styles as Styles
 import Text.Parsing.Parser (ParserT)
 import Text.Parsing.Parser.Combinators (skipMany, try, (<?>))
 import Text.Parsing.Parser.String (anyChar, char, noneOf, oneOf, string)
@@ -49,10 +50,10 @@ getDateTime (Post { dateTime }) = dateTime
 
 viewEntry :: forall e. Post -> Markup e
 viewEntry (Post post) =
-  li do
+  li ! className Styles.postEntryClass $ do
     viewDateTime post.dateTime
-    h2 $ a ! href url $ text post.title
-    p ! className "subtitle" $ text post.description
+    h2 ! className Styles.postEntryTitleClass $ a ! href url $ text post.title
+    p ! className Styles.postEntryDescriptionClass $ text post.description
     a ! href url $ text "Read more &rarr;"
   where
   url = getURL $ Post post
@@ -65,7 +66,8 @@ viewContent (Post post) content =
     content
 
 viewDateTime :: forall e. DateTime -> Markup e
-viewDateTime dateTime = time ! datetime machineDate $ text displayDate
+viewDateTime dateTime =
+  time ! className Styles.postDateClass ! datetime machineDate $ text displayDate
   where
   displayDate = DateTimeFormatter.format displayDateFormatter dateTime
 

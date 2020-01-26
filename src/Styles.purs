@@ -1,4 +1,7 @@
-module Styles (accentColor, postListClass, sheet) where
+module Styles
+  ( accentColor, postDateClass, postEntryClass, postEntryDescriptionClass
+  , postEntryTitleClass, postListClass, sheet
+  ) where
 
 import Prelude
 
@@ -47,6 +50,18 @@ darkerBackgroundColor = rgb 245 245 245
 
 postListClass :: String
 postListClass = "post-list"
+
+postEntryClass :: String
+postEntryClass = "post-entry"
+
+postEntryTitleClass :: String
+postEntryTitleClass = "post-entry-title"
+
+postEntryDescriptionClass :: String
+postEntryDescriptionClass = "post-entry-description"
+
+postDateClass :: String
+postDateClass = "post-date"
 
 -- STYLESHEETS
 
@@ -217,24 +232,26 @@ styles = do
   article |* (time |+ h1) ?
     marginTop nil
 
-  ul & byClass postListClass ? do
+  star & byClass postListClass ? do
     listStyleType none
     margin nil nil nil nil
     paddingLeft (em 1.0)
     paddingRight (em 1.0)
     paddingTop (em 1.5)
 
-  (ul & byClass postListClass) |* li ?
+  star & byClass postDateClass ?
+    color primaryTextColor
+
+  star & byClass postEntryClass ?
     paddingBottom (em 2.0)
 
-  (ul & byClass postListClass) |* (li |* (time |+ h2)) ? do
-    marginTop (em 0.25)
+  star & byClass postEntryTitleClass ? do
+    marginTop nil
     marginBottom (em 0.25)
 
-  (ul & byClass postListClass) |* (li |* (p & byClass "subtitle")) ? do
-    margin nil nil nil nil
+  star & byClass postEntryDescriptionClass ? do
+    marginTop nil
     marginBottom (em 0.25)
-    color primaryTextColor
 
   (html <> body) ?
     height (pct 100.0)
