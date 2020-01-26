@@ -197,6 +197,9 @@ styles = do
     fontFamily [ "Rajdhani" ] (singleton sansSerif)
     fontWeight (FontWeight 500)
 
+  h2 ?
+    fontSize (em 2.0)
+
   strong ?
     fontWeight (FontWeight 500)
 
@@ -268,7 +271,6 @@ styles = do
   star & byClass postTitleClass ? do
     fontSize (em 2.5)
     marginTop nil
-    marginBottom nil
 
   (star & byClass postTitleClass) |* (a & anyLink) ?
     textDecoration noneTextDecoration
