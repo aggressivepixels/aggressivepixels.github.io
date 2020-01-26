@@ -16,11 +16,25 @@ import Data.Int as Int
 import Data.Maybe (Maybe(..))
 import Data.NonEmpty ((:|), singleton)
 
-primaryTextColor = rgba 0 0 0 0.87
-secondaryTextColor = rgba 0 0 0 0.6
-accentColor = rgb 50 115 220
-separatorColor = rgb 219 219 219
-darkerBackgroundColor = rgb 245 245 245
+primaryTextColor :: Color
+primaryTextColor =
+  rgba 0 0 0 0.87
+
+secondaryTextColor :: Color
+secondaryTextColor =
+  rgba 0 0 0 0.6
+
+accentColor :: Color
+accentColor =
+  rgb 50 115 220
+
+separatorColor :: Color
+separatorColor =
+  rgb 219 219 219
+
+darkerBackgroundColor :: Color
+darkerBackgroundColor =
+  rgb 245 245 245
 
 sheet :: Rendered
 sheet = render $ fonts *> styles
