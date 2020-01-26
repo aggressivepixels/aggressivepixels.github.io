@@ -267,6 +267,9 @@ styles = do
     marginTop nil
     marginBottom nil
 
+  (star & byClass postTitleClass) |* (a & anyLink) ?
+    textDecoration noneTextDecoration
+
   (star & byClass postContentClass) |* (p & firstChild) ?
     marginTop nil
 
