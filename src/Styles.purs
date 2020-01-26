@@ -9,14 +9,14 @@ import Prelude
 import CSS
   ( class Val, CSS, Color, Feature(..), FontFaceFormat(..), FontFaceSrc(..)
   , GenericFontFamily(..), Rendered, Selector, a, after, anyLink, article
-  , backgroundColor, before, body, borderBottom, borderBox, borderRadius
-  , borderTop, boxSizing, byClass, code, color, column, display, flex
-  , flexDirection, flexGrow, fontFace, fontFaceFamily, fontFaceSrc, fontFamily
-  , fontSize, footer, fromString, h1, h2, h3, h4, h5, h6, height, html, key
-  , lineHeight, main, margin, marginBottom, marginLeft, marginRight, marginTop
-  , nav, noneTextDecoration, p, padding, paddingBottom, paddingLeft
-  , paddingRight, paddingTop, pre, query, render, rgb, rgba, sansSerif, solid
-  , star, textDecoration, value, width, (&), (?), (|*)
+  , backgroundColor, before, body, borderBox, borderRadius, borderTop
+  , boxSizing, byClass, code, color, column, display, flex, flexDirection
+  , flexGrow, fontFace, fontFaceFamily, fontFaceSrc, fontFamily, fontSize
+  , footer, fromString, h1, h2, h3, h4, h5, h6, height, html, key, lineHeight
+  , main, margin, marginBottom, marginLeft, marginRight, marginTop, nav
+  , noneTextDecoration, p, padding, paddingBottom, paddingLeft, paddingRight
+  , paddingTop, pre, query, render, rgb, rgba, sansSerif, solid, star
+  , textDecoration, value, width, (&), (?), (|*)
   )
 import CSS.Common (auto, inherit, none, normal)
 import CSS.FontStyle (fontStyle, italic)
