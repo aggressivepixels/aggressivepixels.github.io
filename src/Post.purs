@@ -37,7 +37,7 @@ newtype Post
 derive instance eqPost :: Eq Post
 
 instance ordPost :: Ord Post where
-  compare (Post a) (Post b) = compare a.dateTime b.dateTime
+  compare (Post a) (Post b) = compare b.dateTime a.dateTime
 
 getTitle :: Post -> String
 getTitle (Post { title }) = title
