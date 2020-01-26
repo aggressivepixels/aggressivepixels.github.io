@@ -27,24 +27,19 @@ import Data.Maybe (Maybe(..))
 import Data.NonEmpty (singleton, (:|))
 
 primaryTextColor :: Color
-primaryTextColor =
-  rgba 0 0 0 0.87
+primaryTextColor = rgba 0 0 0 0.87
 
 secondaryTextColor :: Color
-secondaryTextColor =
-  rgba 0 0 0 0.6
+secondaryTextColor = rgba 0 0 0 0.6
 
 accentColor :: Color
-accentColor =
-  rgb 50 115 220
+accentColor = rgb 50 115 220
 
 separatorColor :: Color
-separatorColor =
-  rgb 219 219 219
+separatorColor = rgb 219 219 219
 
 darkerBackgroundColor :: Color
-darkerBackgroundColor =
-  rgb 245 245 245
+darkerBackgroundColor = rgb 245 245 245
 
 sheet :: Rendered
 sheet = render $ fonts *> styles
