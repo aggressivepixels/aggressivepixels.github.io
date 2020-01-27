@@ -99,6 +99,7 @@ rubik = do
   fontFace do
     fontFaceFamily "Rubik"
     fontStyle normal
+    fontDisplay Swap
     fontWeight $ FontWeight 400
     fontFaceSrc $
       FontFaceSrcLocal "Rubik Regular" :|
@@ -110,6 +111,7 @@ rubik = do
   fontFace do
     fontFaceFamily "Rubik"
     fontStyle italic
+    fontDisplay Swap
     fontWeight $ FontWeight 400
     fontFaceSrc $
       FontFaceSrcLocal "Rubik Italic" :|
@@ -121,6 +123,7 @@ rubik = do
   fontFace do
     fontFaceFamily "Rubik"
     fontStyle normal
+    fontDisplay Swap
     fontWeight $ FontWeight 500
     fontFaceSrc $
       FontFaceSrcLocal "Rubik Medium" :|
@@ -132,6 +135,7 @@ rubik = do
   fontFace do
     fontFaceFamily "Rubik"
     fontStyle italic
+    fontDisplay Swap
     fontWeight $ FontWeight 500
     fontFaceSrc $
       FontFaceSrcLocal "Rubik Medium Italic" :|
@@ -145,6 +149,7 @@ rajdhani = do
   fontFace do
     fontFaceFamily "Rajdhani"
     fontStyle normal
+    fontDisplay Swap
     fontWeight $ FontWeight 400
     fontFaceSrc $
       FontFaceSrcLocal "Rajdhani Regular" :|
@@ -156,6 +161,7 @@ rajdhani = do
   fontFace do
     fontFaceFamily "Rajdhani"
     fontStyle normal
+    fontDisplay Swap
     fontWeight $ FontWeight 500
     fontFaceSrc $
       FontFaceSrcLocal "Rajdhani-Medium" :|
@@ -168,6 +174,7 @@ firaMono :: CSS
 firaMono = fontFace do
   fontFaceFamily "Fira Mono"
   fontStyle normal
+  fontDisplay Swap
   fontWeight $ FontWeight 400
   fontFaceSrc $
     FontFaceSrcLocal "Fira Mono Regular" :|
@@ -330,3 +337,20 @@ instance valFontWeight :: Val FontWeight where
 
 fontWeight :: FontWeight -> CSS
 fontWeight = key $ fromString "font-weight"
+
+data FontDisplay
+  = Auto
+  | Block
+  | Swap
+  | Fallback
+  | Optional
+
+instance valFontDisplay :: Val FontDisplay where
+  value Auto = value "auto"
+  value Block = value "block"
+  value Swap = value "swap"
+  value Fallback = value "fallback"
+  value Optional = value "optional"
+
+fontDisplay :: FontDisplay -> CSS
+fontDisplay = key $ fromString "font-display"
