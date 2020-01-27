@@ -17,3 +17,8 @@ env:
 after_success:
   - yarn spago run
   - ./deploy.sh
+
+cache:
+  directories:
+  - $HOME/.cache/spago
+  - .spago
