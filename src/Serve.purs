@@ -7,6 +7,7 @@ import Bucketchain.Http (requestURL, setRequestURL)
 import Bucketchain.Static (withStatic)
 import Control.Monad.Reader (ask)
 import Data.Maybe (Maybe(..))
+import Data.String.CodeUnits (takeRight)
 import Data.Time.Duration (Seconds(..))
 import Effect (Effect)
 import Effect.Class (liftEffect)
@@ -32,9 +33,9 @@ opts =
 withIndex :: Middleware
 withIndex next = do
   http <- ask
-  liftEffect
-    $ if requestURL http == "/" then
-        setRequestURL http "/index.html"
-      else
-        pure unit
+  liftEffect $ 
+    let origRequestURL = requestURL http in
+    if takeRight 1 origRequestURL == "/"
+      then setRequestURL http $ origRequestURL <> "index.html"
+      else pure unit
   next

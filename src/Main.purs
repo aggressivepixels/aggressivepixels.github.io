@@ -63,14 +63,15 @@ main = do
   FS.mkdir (Path.concat [ "dist", "posts" ])
   for_ posts \(Tuple post rawMarkdown) -> case parseMd rawMarkdown of
     Left err -> throw $ "when parsing the content of \"" <> Post.getTitle post <> "\": " <> err
-    Right (markdown :: SlamDown) ->
+    Right (markdown :: SlamDown) -> do
+      FS.mkdir (Path.concat [ "dist", Post.getPath post ])
       Skeleton.view
         { title: Just $ Post.getTitle post
         , description: Just $ Post.getDescription post
         , content: Post.viewContent post (toMarkup markdown)
         }
         # StringRenderer.render
-        # FS.writeTextFile UTF8 (Path.concat [ "dist", Post.getPath post ])
+        # FS.writeTextFile UTF8 (Path.concat [ "dist", Post.getPath post, "index.html" ])
 
 wipe :: FilePath -> Effect Unit
 wipe file = do

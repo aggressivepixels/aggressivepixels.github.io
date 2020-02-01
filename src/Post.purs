@@ -75,13 +75,13 @@ viewDateTime dateTime =
   machineDate = DateTimeFormatter.format machineDateFormatter dateTime
 
 getURL :: Post -> String
-getURL = (<>) "/" <<< getPathWithSep "/"
+getURL post = "/" <> getPathWithSep "/" post <> "/"
 
 getPath :: Post -> FilePath
 getPath = getPathWithSep Path.sep
 
 getPathWithSep :: String -> Post -> String
-getPathWithSep sep (Post { title }) = joinWith sep [ "posts", getSlug title <> ".html" ]
+getPathWithSep sep (Post { title }) = joinWith sep [ "posts", getSlug title ]
 
 displayDateFormatter :: Formatter
 displayDateFormatter =
