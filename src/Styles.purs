@@ -360,7 +360,7 @@ styles = do
   main ? flexGrow 1
 
   star & byClass navContentClass ? padding (em 0.75) (em 1.0) (em 0.6) (em 1.0)
-  
+
   query screen (singleton $ minWidth (px 800.0)) desktopStyle
 
 desktopStyle :: CSS

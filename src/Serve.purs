@@ -20,7 +20,7 @@ main :: Effect Unit
 main = server >>= listen opts
 
 server :: Effect Server
-server = createServer $ withIndex 
+server = createServer $ withIndex
   <$> withStatic { root: "./dist", maxAge: Seconds 0.0 }
 
 opts :: ListenOptions
