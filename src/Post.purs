@@ -37,10 +37,10 @@ import Text.Smolder.Markup (Markup, (!), text)
 
 newtype Post =
   Post
-    { title :: String
-    , description :: String
-    , dateTime :: DateTime
-    }
+  { title :: String
+  , description :: String
+  , dateTime :: DateTime
+  }
 
 derive instance eqPost :: Eq Post
 
