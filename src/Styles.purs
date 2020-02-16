@@ -1,22 +1,95 @@
 module Styles
-  ( accentColor, logoClass, navContentClass, postClass, postContentClass
-  , postDateClass, postEntryClass, postEntryDescriptionClass
-  , postEntryTitleClass, postListClass, postTitleClass, sheet
+  ( accentColor
+  , logoClass
+  , navContentClass
+  , postClass
+  , postContentClass
+  , postDateClass
+  , postEntryClass
+  , postEntryDescriptionClass
+  , postEntryTitleClass
+  , postListClass
+  , postTitleClass
+  , sheet
   ) where
 
 import Prelude
 
 import CSS
-  ( class Val, CSS, Color, Feature(..), FontFaceFormat(..), FontFaceSrc(..)
-  , GenericFontFamily(..), Rendered, Selector, a, after, anyLink, article
-  , backgroundColor, before, body, borderBox, borderRadius, borderTop
-  , boxSizing, byClass, code, color, column, display, flex, flexDirection
-  , flexGrow, fontFace, fontFaceFamily, fontFaceSrc, fontFamily, fontSize
-  , footer, fromString, h1, h2, h3, h4, h5, h6, height, html, key, lineHeight
-  , main, margin, marginBottom, marginLeft, marginRight, marginTop, nav
-  , noneTextDecoration, p, padding, paddingBottom, paddingLeft, paddingRight
-  , paddingTop, pre, query, render, rgb, rgba, sansSerif, solid, star, strong
-  , textDecoration, value, width, (&), (?), (|*)
+  ( class Val
+  , CSS
+  , Color
+  , Feature(..)
+  , FontFaceFormat(..)
+  , FontFaceSrc(..)
+  , GenericFontFamily(..)
+  , Rendered
+  , Selector
+  , (&)
+  , (?)
+  , (|*)
+  , a
+  , after
+  , anyLink
+  , article
+  , backgroundColor
+  , before
+  , body
+  , borderBox
+  , borderRadius
+  , borderTop
+  , boxSizing
+  , byClass
+  , code
+  , color
+  , column
+  , display
+  , flex
+  , flexDirection
+  , flexGrow
+  , fontFace
+  , fontFaceFamily
+  , fontFaceSrc
+  , fontFamily
+  , fontSize
+  , footer
+  , fromString
+  , h1
+  , h2
+  , h3
+  , h4
+  , h5
+  , h6
+  , height
+  , html
+  , key
+  , lineHeight
+  , main
+  , margin
+  , marginBottom
+  , marginLeft
+  , marginRight
+  , marginTop
+  , nav
+  , noneTextDecoration
+  , p
+  , padding
+  , paddingBottom
+  , paddingLeft
+  , paddingRight
+  , paddingTop
+  , pre
+  , query
+  , render
+  , rgb
+  , rgba
+  , sansSerif
+  , solid
+  , star
+  , strong
+  , textDecoration
+  , value
+  , width
   )
 import CSS.Common (auto, inherit, none, normal)
 import CSS.FontStyle (fontStyle, italic)
@@ -29,7 +102,7 @@ import CSS.Text.Transform (textTransform, uppercase)
 import CSS.Text.Whitespace (textWhitespace, whitespacePre)
 import CSS.TextAlign (center, textAlign)
 import Data.Maybe (Maybe(..))
-import Data.NonEmpty (singleton, (:|))
+import Data.NonEmpty ((:|), singleton)
 
 -- COLORS
 
@@ -103,10 +176,10 @@ rubik = do
     fontWeight $ FontWeight 400
     fontFaceSrc $
       FontFaceSrcLocal "Rubik Regular" :|
-        [ FontFaceSrcLocal "Rubik-Regular"
-        , FontFaceSrcUrl "../fonts/rubik-v9-latin-regular.woff2" (Just WOFF2)
-        , FontFaceSrcUrl "../fonts/rubik-v9-latin-regular.woff" (Just WOFF)
-        ]
+      [ FontFaceSrcLocal "Rubik-Regular"
+      , FontFaceSrcUrl "../fonts/rubik-v9-latin-regular.woff2" (Just WOFF2)
+      , FontFaceSrcUrl "../fonts/rubik-v9-latin-regular.woff" (Just WOFF)
+      ]
 
   fontFace do
     fontFaceFamily "Rubik"
@@ -115,10 +188,10 @@ rubik = do
     fontWeight $ FontWeight 400
     fontFaceSrc $
       FontFaceSrcLocal "Rubik Italic" :|
-        [ FontFaceSrcLocal "Rubik-Italic"
-        , FontFaceSrcUrl "../fonts/rubik-v9-latin-italic.woff2" (Just WOFF2)
-        , FontFaceSrcUrl "../fonts/rubik-v9-latin-italic.woff" (Just WOFF)
-        ]
+      [ FontFaceSrcLocal "Rubik-Italic"
+      , FontFaceSrcUrl "../fonts/rubik-v9-latin-italic.woff2" (Just WOFF2)
+      , FontFaceSrcUrl "../fonts/rubik-v9-latin-italic.woff" (Just WOFF)
+      ]
 
   fontFace do
     fontFaceFamily "Rubik"
@@ -127,10 +200,10 @@ rubik = do
     fontWeight $ FontWeight 500
     fontFaceSrc $
       FontFaceSrcLocal "Rubik Medium" :|
-        [ FontFaceSrcLocal "Rubik-Medium"
-        , FontFaceSrcUrl "../fonts/rubik-v9-latin-500.woff2" (Just WOFF2)
-        , FontFaceSrcUrl "../fonts/rubik-v9-latin-500.woff" (Just WOFF)
-        ]
+      [ FontFaceSrcLocal "Rubik-Medium"
+      , FontFaceSrcUrl "../fonts/rubik-v9-latin-500.woff2" (Just WOFF2)
+      , FontFaceSrcUrl "../fonts/rubik-v9-latin-500.woff" (Just WOFF)
+      ]
 
   fontFace do
     fontFaceFamily "Rubik"
@@ -139,10 +212,10 @@ rubik = do
     fontWeight $ FontWeight 500
     fontFaceSrc $
       FontFaceSrcLocal "Rubik Medium Italic" :|
-        [ FontFaceSrcLocal "Rubik-MediumItalic"
-        , FontFaceSrcUrl "../fonts/rubik-v9-latin-500italic.woff2" (Just WOFF2)
-        , FontFaceSrcUrl "../fonts/rubik-v9-latin-500italic.woff" (Just WOFF)
-        ]
+      [ FontFaceSrcLocal "Rubik-MediumItalic"
+      , FontFaceSrcUrl "../fonts/rubik-v9-latin-500italic.woff2" (Just WOFF2)
+      , FontFaceSrcUrl "../fonts/rubik-v9-latin-500italic.woff" (Just WOFF)
+      ]
 
 rajdhani :: CSS
 rajdhani = do
@@ -153,10 +226,10 @@ rajdhani = do
     fontWeight $ FontWeight 400
     fontFaceSrc $
       FontFaceSrcLocal "Rajdhani Regular" :|
-        [ FontFaceSrcLocal "Rajdhani-Regular"
-        , FontFaceSrcUrl "../fonts/rajdhani-v9-latin-regular.woff2" (Just WOFF2)
-        , FontFaceSrcUrl "../fonts/rajdhani-v9-latin-regular.woff" (Just WOFF)
-        ]
+      [ FontFaceSrcLocal "Rajdhani-Regular"
+      , FontFaceSrcUrl "../fonts/rajdhani-v9-latin-regular.woff2" (Just WOFF2)
+      , FontFaceSrcUrl "../fonts/rajdhani-v9-latin-regular.woff" (Just WOFF)
+      ]
 
   fontFace do
     fontFaceFamily "Rajdhani"
@@ -165,19 +238,20 @@ rajdhani = do
     fontWeight $ FontWeight 500
     fontFaceSrc $
       FontFaceSrcLocal "Rajdhani-Medium" :|
-        [ FontFaceSrcLocal "Rajdhani-Medium"
-        , FontFaceSrcUrl "../fonts/rajdhani-v9-latin-500.woff2" (Just WOFF2)
-        , FontFaceSrcUrl "../fonts/rajdhani-v9-latin-500.woff" (Just WOFF)
-        ]
+      [ FontFaceSrcLocal "Rajdhani-Medium"
+      , FontFaceSrcUrl "../fonts/rajdhani-v9-latin-500.woff2" (Just WOFF2)
+      , FontFaceSrcUrl "../fonts/rajdhani-v9-latin-500.woff" (Just WOFF)
+      ]
 
 firaMono :: CSS
-firaMono = fontFace do
-  fontFaceFamily "Fira Mono"
-  fontStyle normal
-  fontDisplay Swap
-  fontWeight $ FontWeight 400
-  fontFaceSrc $
-    FontFaceSrcLocal "Fira Mono Regular" :|
+firaMono =
+  fontFace do
+    fontFaceFamily "Fira Mono"
+    fontStyle normal
+    fontDisplay Swap
+    fontWeight $ FontWeight 400
+    fontFaceSrc $
+      FontFaceSrcLocal "Fira Mono Regular" :|
       [ FontFaceSrcLocal "FiraMono-Regular"
       , FontFaceSrcUrl "../fonts/fira-mono-v8-latin-regular.woff2" (Just WOFF2)
       , FontFaceSrcUrl "../fonts/fira-mono-v8-latin-regular.woff" (Just WOFF)
@@ -185,30 +259,25 @@ firaMono = fontFace do
 
 styles :: CSS
 styles = do
-  html ?
-    boxSizing borderBox
+  html ? boxSizing borderBox
 
-  (star <> star & before <> star & after) ?
-    boxSizing inherit
+  (star <> star & before <> star & after) ? boxSizing inherit
 
   body ? do
     margin nil nil nil nil
     color secondaryTextColor
-    fontFamily [ "Rubik" ] (singleton sansSerif)
+    fontFamily ["Rubik"] (singleton sansSerif)
 
-  a & anyLink ?
-    color accentColor
+  a & anyLink ? color accentColor
 
   (h1 <> h2 <> h3 <> h4 <> h5 <> h6) ? do
     color primaryTextColor
-    fontFamily [ "Rajdhani" ] (singleton sansSerif)
+    fontFamily ["Rajdhani"] (singleton sansSerif)
     fontWeight (FontWeight 500)
 
-  h2 ?
-    fontSize (em 2.0)
+  h2 ? fontSize (em 2.0)
 
-  strong ?
-    fontWeight (FontWeight 500)
+  strong ? fontWeight (FontWeight 500)
 
   footer ? do
     backgroundColor darkerBackgroundColor
@@ -231,22 +300,20 @@ styles = do
     marginTop (em 0.5)
     marginBottom (em 0.5)
 
-  code ?
-    fontFamily [ "Fira Mono" ] (singleton monospace)
+  code ? fontFamily ["Fira Mono"] (singleton monospace)
 
   nav ? do
     color navSecondaryTextColor
     backgroundColor accentColor
 
   star & byClass logoClass ? do
-    fontFamily [ "Rajdhani" ] (singleton sansSerif)
+    fontFamily ["Rajdhani"] (singleton sansSerif)
     fontSize (em 1.5)
     textTransform uppercase
     textDecoration noneTextDecoration
     fontWeight $ FontWeight 500
 
-  (star & byClass logoClass) & anyLink ?
-    color navPrimaryTextColor
+  (star & byClass logoClass) & anyLink ? color navPrimaryTextColor
 
   article ? do
     paddingTop (em 1.5)
@@ -261,11 +328,9 @@ styles = do
     paddingRight (em 1.0)
     paddingTop (em 1.5)
 
-  star & byClass postDateClass ?
-    color primaryTextColor
+  star & byClass postDateClass ? color primaryTextColor
 
-  star & byClass postEntryClass ?
-    paddingBottom (em 2.0)
+  star & byClass postEntryClass ? paddingBottom (em 2.0)
 
   star & byClass postEntryTitleClass ? do
     marginTop nil
@@ -282,25 +347,20 @@ styles = do
   (star & byClass postTitleClass) |* (a & anyLink) ?
     textDecoration noneTextDecoration
 
-  (star & byClass postContentClass) |* p ?
-    lineHeight (unitless 1.75)
+  (star & byClass postContentClass) |* p ? lineHeight (unitless 1.75)
 
-  (star & byClass postContentClass) |* (p & firstChild) ?
-    marginTop nil
+  (star & byClass postContentClass) |* (p & firstChild) ? marginTop nil
 
-  (html <> body) ?
-    height (pct 100.0)
+  (html <> body) ? height (pct 100.0)
 
   body ? do
     display flex
     flexDirection column
 
-  main ? do
-    flexGrow 1
+  main ? flexGrow 1
 
-  star & byClass navContentClass ? do
-    padding (em 0.75) (em 1.0) (em 0.6) (em 1.0)
-
+  star & byClass navContentClass ? padding (em 0.75) (em 1.0) (em 0.6) (em 1.0)
+  
   query screen (singleton $ minWidth (px 800.0)) desktopStyle
 
 desktopStyle :: CSS

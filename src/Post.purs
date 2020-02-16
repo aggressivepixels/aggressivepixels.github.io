@@ -1,11 +1,19 @@
 module Post
-  ( Post, getDateTime, getDescription, getPath, getTitle, getURL, parser
-  , viewContent, viewEntry
+  ( Post
+  , getDateTime
+  , getDescription
+  , getPath
+  , getTitle
+  , getURL
+  , parser
+  , viewContent
+  , viewEntry
   ) where
 
 import Prelude hiding (div)
+
 import Control.Alt ((<|>))
-import Data.Array (many, (:))
+import Data.Array ((:), many)
 import Data.Array as Array
 import Data.Char.Unicode as Unicode
 import Data.DateTime (DateTime)
@@ -21,18 +29,18 @@ import Node.Path (FilePath)
 import Node.Path as Path
 import Styles as Styles
 import Text.Parsing.Parser (ParserT)
-import Text.Parsing.Parser.Combinators (skipMany, try, (<?>))
+import Text.Parsing.Parser.Combinators ((<?>), skipMany, try)
 import Text.Parsing.Parser.String (anyChar, char, noneOf, oneOf, string)
 import Text.Smolder.HTML (a, article, div, h1, h2, li, p, time)
 import Text.Smolder.HTML.Attributes (className, datetime, href)
-import Text.Smolder.Markup (Markup, text, (!))
+import Text.Smolder.Markup (Markup, (!), text)
 
-newtype Post
-  = Post
-  { title :: String
-  , description :: String
-  , dateTime :: DateTime
-  }
+newtype Post =
+  Post
+    { title :: String
+    , description :: String
+    , dateTime :: DateTime
+    }
 
 derive instance eqPost :: Eq Post
 
@@ -40,13 +48,13 @@ instance ordPost :: Ord Post where
   compare (Post a) (Post b) = compare b.dateTime a.dateTime
 
 getTitle :: Post -> String
-getTitle (Post { title }) = title
+getTitle (Post {title}) = title
 
 getDescription :: Post -> String
-getDescription (Post { description }) = description
+getDescription (Post {description}) = description
 
 getDateTime :: Post -> DateTime
-getDateTime (Post { dateTime }) = dateTime
+getDateTime (Post {dateTime}) = dateTime
 
 viewEntry :: forall e. Post -> Markup e
 viewEntry (Post post) =
@@ -56,23 +64,23 @@ viewEntry (Post post) =
     p ! className Styles.postEntryDescriptionClass $ text post.description
     a ! href url $ text "Read more &rarr;"
   where
-  url = getURL $ Post post
+    url = getURL $ Post post
 
 viewContent :: forall e. Post -> Markup e -> Markup e
 viewContent (Post post) content =
   article ! className Styles.postClass $ do
     viewDateTime post.dateTime
-    h1 ! className Styles.postTitleClass $ a ! href (getURL $ Post post) $
-      text post.title
+    h1 ! className Styles.postTitleClass $
+      a ! href (getURL $ Post post) $ text post.title
     div ! className Styles.postContentClass $ content
 
 viewDateTime :: forall e. DateTime -> Markup e
 viewDateTime dateTime =
-  time ! className Styles.postDateClass ! datetime machineDate $ text displayDate
+  time ! className Styles.postDateClass ! datetime machineDate $
+  text displayDate
   where
-  displayDate = DateTimeFormatter.format displayDateFormatter dateTime
-
-  machineDate = DateTimeFormatter.format machineDateFormatter dateTime
+    displayDate = DateTimeFormatter.format displayDateFormatter dateTime
+    machineDate = DateTimeFormatter.format machineDateFormatter dateTime
 
 getURL :: Post -> String
 getURL post = "/" <> getPathWithSep "/" post <> "/"
@@ -81,7 +89,7 @@ getPath :: Post -> FilePath
 getPath = getPathWithSep Path.sep
 
 getPathWithSep :: String -> Post -> String
-getPathWithSep sep (Post { title }) = joinWith sep [ "posts", getSlug title ]
+getPathWithSep sep (Post {title}) = joinWith sep ["posts", getSlug title]
 
 displayDateFormatter :: Formatter
 displayDateFormatter =
@@ -107,18 +115,14 @@ machineDateFormatter =
 -- https://robertwpearce.com/hakyll-pt-5-generating-custom-post-filenames-from-a-title-slug.html
 getSlug :: String -> String
 getSlug =
-  replaceAll (Pattern "&") (Replacement "and")
-    >>> replaceAll (Pattern "'") (Replacement "")
-    >>> toCharArray
-    >>> map keepAlphaNum
-    >>> fromCharArray
-    >>> toLower
-    >>> words
-    >>> joinWith "-"
+  replaceAll (Pattern "&") (Replacement "and") >>>
+  replaceAll (Pattern "'") (Replacement "") >>>
+  toCharArray >>>
+  map keepAlphaNum >>> fromCharArray >>> toLower >>> words >>> joinWith "-"
   where
-  keepAlphaNum c
-    | Unicode.isAlphaNum c = c
-    | otherwise = ' '
+    keepAlphaNum c
+      | Unicode.isAlphaNum c = c
+      | otherwise = ' '
 
 -- Taken from here:
 -- https://github.com/cdepillabout/purescript-words-lines
@@ -133,54 +137,55 @@ words = map fromCharArray <<< go <<< toCharArray
       in
         init : go rest
 
-parser :: forall m. Monad m => ParserT String m (Tuple Post String)
+parser ::
+  forall m. Monad m
+  => ParserT String m (Tuple Post String)
 parser = Tuple <$> metadata <*> content
   where
-  metadata = do
-    separator
-    -- TODO: Allow to write these fields in any order.
-    -- TODO: Add tags field.
-    title <- section "title" stringContent
-    description <- section "description" stringContent
-    dateTime <- section "date" dateContent
-    separator
-    pure
-      $ Post
-          { title: title
-          , description: description
-          , dateTime: dateTime
-          }
+    metadata = do
+      separator
+      -- TODO: Allow to write these fields in any order.
+      -- TODO: Add tags field.
+      title <- section "title" stringContent
+      description <- section "description" stringContent
+      dateTime <- section "date" dateContent
+      separator
+      pure $ Post
+        { title: title
+        , description: description
+        , dateTime: dateTime
+        }
 
-  content = fromCharArray >>> trim <$> many anyChar
+    content = fromCharArray >>> trim <$> many anyChar
 
-  section :: forall a. String -> ParserT String m a -> ParserT String m a
-  section title sectionParser = do
-    skipMany whitespace
-    void $ string title
-    skipMany whitespace
-    void $ char ':'
-    result <- sectionParser
-    void eol
-    pure result
+    section :: forall a. String -> ParserT String m a -> ParserT String m a
+    section title sectionParser = do
+      skipMany whitespace
+      void $ string title
+      skipMany whitespace
+      void $ char ':'
+      result <- sectionParser
+      void eol
+      pure result
 
-  stringContent = fromCharArray >>> trim <$> many (noneOf [ '\n', '\r' ])
+    stringContent = fromCharArray >>> trim <$> many (noneOf ['\n', '\r'])
 
-  dateContent = do
-    skipMany whitespace
-    date <- DateTimeFormatter.unformatParser machineDateFormatter
-    skipMany whitespace
-    pure date
+    dateContent = do
+      skipMany whitespace
+      date <- DateTimeFormatter.unformatParser machineDateFormatter
+      skipMany whitespace
+      pure date
 
-  separator = do
-    skipMany whitespace
-    void $ string "---"
-    skipMany whitespace
-    void eol
+    separator = do
+      skipMany whitespace
+      void $ string "---"
+      skipMany whitespace
+      void eol
 
-  whitespace = oneOf [ ' ', '\t' ]
+    whitespace = oneOf [' ', '\t']
 
-  eol =
-    try (string "\n\r")
+    eol =
+      try (string "\n\r")
       <|> try (string "\r\n")
       <|> string "\n"
       <|> string "\r"

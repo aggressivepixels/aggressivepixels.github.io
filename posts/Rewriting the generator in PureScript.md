@@ -9,13 +9,13 @@ It did what it needed to do, it was fast and it was very small. But I wasn't
 happy with it — HTML templates are brittle, and so is CSS. Having a bit of
 experience with [Elm](https://elm-lang.org), I really wanted something like
 it's [`Html`](https://package.elm-lang.org/packages/elm/html/latest/) package.
-*However* I find Elm to be an overkill for a simple blog, and I don't find the
+_However_ I find Elm to be an overkill for a simple blog, and I don't find the
 options for static Elm pages very compelling, either. After thinking a bit and
 pondering my options, I decided to go with PureScript.
 
 ## Why?
 
-I've been reading about Haskell *a lot* recently, and I initially tried to
+I've been reading about Haskell _a lot_ recently, and I initially tried to
 build the blog using [Hakyll](https://jaspervdj.be/hakyll/), but I ran out of
 RAM several times when attempting to compile one of it's dependencies
 ([Pandoc](https://pandoc.org/)). I also knew about PureScript,

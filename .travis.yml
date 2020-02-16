@@ -20,6 +20,6 @@ after_success:
 
 cache:
   directories:
-  - $HOME/.cache/spago
-  - .spago
-  - output
+    - $HOME/.cache/spago
+    - .spago
+    - output
