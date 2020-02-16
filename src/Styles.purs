@@ -2,6 +2,8 @@ module Styles
   ( accentColor
   , logoClass
   , navContentClass
+  , notFoundClass
+  , notFoundTitleClass
   , postClass
   , postContentClass
   , postDateClass
@@ -30,6 +32,7 @@ import CSS
   , (|*)
   , a
   , after
+  , alignItems
   , anyLink
   , article
   , backgroundColor
@@ -62,6 +65,7 @@ import CSS
   , h6
   , height
   , html
+  , justifyContent
   , key
   , lineHeight
   , main
@@ -92,6 +96,7 @@ import CSS
   , width
   )
 import CSS.Common (auto, inherit, none, normal)
+import CSS.Common as Common
 import CSS.FontStyle (fontStyle, italic)
 import CSS.ListStyle.Type (listStyleType)
 import CSS.Media (screen)
@@ -158,6 +163,12 @@ navContentClass = "nav-content"
 
 logoClass :: String
 logoClass = "logo"
+
+notFoundClass :: String
+notFoundClass = "not-found"
+
+notFoundTitleClass :: String
+notFoundTitleClass = "not-found-title"
 
 -- STYLESHEETS
 
@@ -360,6 +371,21 @@ styles = do
   main ? flexGrow 1
 
   star & byClass navContentClass ? padding (em 0.75) (em 1.0) (em 0.6) (em 1.0)
+
+  star & byClass notFoundClass ? do
+    alignItems Common.center
+    display flex
+    flexDirection column
+    height (pct 100.0)
+    justifyContent Common.center
+    padding (em 1.0) (em 1.0) (em 1.0) (em 1.0)
+    textAlign center
+
+  star & byClass notFoundTitleClass ? do
+    color accentColor
+    fontSize (em 4.0)
+    marginBottom nil
+    marginTop nil
 
   query screen (singleton $ minWidth (px 800.0)) desktopStyle
 

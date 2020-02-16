@@ -21,6 +21,7 @@ import Node.FS.Stats as Stats
 import Node.FS.Sync as FS
 import Node.Path (FilePath)
 import Node.Path as Path
+import NotFound as NotFound
 import Post as Post
 import Skeleton as Skeleton
 import Styles as Styles
@@ -42,6 +43,13 @@ main = do
       Just renderedCSS -> pure renderedCSS
       Nothing -> throw "invalid stylesheet"
   FS.writeTextFile UTF8 (Path.concat ["dist", "css", "styles.css"]) css
+  Skeleton.view
+    { title: Just "Not found"
+    , description: Just "Not found"
+    , content: NotFound.view
+    }
+    # StringRenderer.render
+    # FS.writeTextFile UTF8 (Path.concat ["dist", "404.html"])
   -- Read the posts.
   postsFiles <- FS.readdir "posts"
   posts <-
