@@ -115,10 +115,14 @@ machineDateFormatter =
 -- https://robertwpearce.com/hakyll-pt-5-generating-custom-post-filenames-from-a-title-slug.html
 getSlug :: String -> String
 getSlug =
-  replaceAll (Pattern "&") (Replacement "and") >>>
-  replaceAll (Pattern "'") (Replacement "") >>>
-  toCharArray >>>
-  map keepAlphaNum >>> fromCharArray >>> toLower >>> words >>> joinWith "-"
+  replaceAll (Pattern "&") (Replacement "and")
+    >>> replaceAll (Pattern "'") (Replacement "")
+    >>> toCharArray
+    >>> map keepAlphaNum
+    >>> fromCharArray
+    >>> toLower
+    >>> words
+    >>> joinWith "-"
   where
     keepAlphaNum c
       | Unicode.isAlphaNum c = c
