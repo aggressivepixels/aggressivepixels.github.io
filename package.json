@@ -5,8 +5,8 @@
     "serve": "spago run --main Serve"
   },
   "dependencies": {
-    "purescript": "^0.13.5",
-    "purty": "^4.5.2",
-    "spago": "^0.13.0"
+    "purescript": "^0.13.6",
+    "purty": "^6.0.2",
+    "spago": "^0.14.0"
   }
 }
