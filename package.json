@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "build": "spago build",
     "test": "spago test",
     "postinstall": "spago install",
     "serve": "spago run --main Serve"
