@@ -24,5 +24,4 @@ jobs:
           git add .
           git commit -m "Deploy"
           git remote add origin https://${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git
-          git checkout master
           git push -u origin master --force
