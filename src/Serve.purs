@@ -3,7 +3,6 @@ module Serve
   ) where
 
 import Prelude
-
 import Bucketchain (createServer, listen)
 import Bucketchain.Http (requestURL, setRequestURL)
 import Bucketchain.Middleware (Middleware)
@@ -20,8 +19,9 @@ main :: Effect Unit
 main = server >>= listen opts
 
 server :: Effect Server
-server = createServer $ withIndex
-  <$> withStatic { root: "./dist", maxAge: Seconds 0.0 }
+server =
+  createServer $ withIndex
+    <$> withStatic { root: "./dist", maxAge: Seconds 0.0 }
 
 opts :: ListenOptions
 opts =
@@ -35,9 +35,12 @@ opts =
 withIndex :: Middleware
 withIndex next = do
   http <- ask
-  liftEffect $
-    let origRequestURL = requestURL http
-     in if takeRight 1 origRequestURL == "/"
-          then setRequestURL http $ origRequestURL <> "index.html"
-          else pure unit
+  liftEffect
+    $ let
+        origRequestURL = requestURL http
+      in
+        if takeRight 1 origRequestURL == "/" then
+          setRequestURL http $ origRequestURL <> "index.html"
+        else
+          pure unit
   next

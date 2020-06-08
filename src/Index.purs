@@ -3,7 +3,6 @@ module Index
   ) where
 
 import Prelude
-
 import Data.Foldable (traverse_)
 import Post (Post, viewEntry)
 import Styles as Styles

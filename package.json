@@ -1,13 +1,14 @@
 {
   "scripts": {
     "build": "spago run",
+    "run-and-watch": "spago run --watch",
     "test": "spago test",
     "postinstall": "spago install",
     "serve": "spago run --main Serve"
   },
   "dependencies": {
-    "purescript": "^0.13.6",
-    "purty": "^6.0.2",
-    "spago": "^0.14.0"
+    "purescript": "^0.13.8",
+    "purty": "^6.2.0",
+    "spago": "^0.15.2"
   }
 }
