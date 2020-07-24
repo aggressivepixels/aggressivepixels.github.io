@@ -44,7 +44,7 @@ function NavLink({ title, href }: NavLinkProps) {
   return (
     <Link href={href}>
       <a
-        className={`font-semibold uppercase mx-3 pt-2 pb-1 mt-1 focus:text-orange-500 text-center ${
+        className={`font-semibold uppercase mx-3 pt-2 pb-1 mt-1 hover:text-orange-500 focus:text-orange-500 text-center ${
           route == href ? 'text-orange-500' : 'text-gray-500'
         }`}
       >
