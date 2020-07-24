@@ -1,6 +1,6 @@
 import React from 'react'
-import { render, fireEvent } from '../testUtils'
-import { Home } from '../../pages/index'
+import { render, fireEvent } from 'test/test-utils'
+import { Home } from 'pages/index'
 
 describe('Home page', () => {
   it('matches snapshot', () => {
@@ -12,6 +12,6 @@ describe('Home page', () => {
     const { getByText } = render(<Home />, {})
     window.alert = jest.fn()
     fireEvent.click(getByText('Test Button'))
-    expect(window.alert).toHaveBeenCalledWith('With typescript and Jest')
+    expect(window.alert).toHaveBeenCalledWith('With TypeScript and Jest')
   })
 })
