@@ -27,9 +27,7 @@
     ]
   },
   "dependencies": {
-    "heroicons": "^0.3.7",
     "next": "latest",
-    "next-transpile-modules": "^3.3.0",
     "nprogress": "^0.2.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
