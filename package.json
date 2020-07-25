@@ -29,6 +29,10 @@
   },
   "dependencies": {
     "@prefresh/next": "^0.3.2",
+    "date-fns": "^2.15.0",
+    "fp-ts": "^2.7.1",
+    "gray-matter": "^4.0.2",
+    "io-ts": "^2.2.9",
     "next": "latest",
     "nprogress": "^0.2.0",
     "preact": "^10.4.6",
@@ -36,6 +40,8 @@
     "react": "github:preact-compat/react#1.0.0",
     "react-dom": "github:preact-compat/react-dom#1.0.0",
     "react-ssr-prepass": "npm:preact-ssr-prepass@^1.0.1",
+    "remark": "^12.0.1",
+    "remark-html": "^12.0.0",
     "typeface-overpass": "^0.0.72"
   },
   "devDependencies": {
