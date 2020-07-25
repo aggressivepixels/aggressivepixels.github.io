@@ -15,7 +15,7 @@ export default function Nav(): ReactElement {
           <span className="text-orange-500">Pixels</span>
         </a>
       </Link>
-      <div className="flex items-baseline pt-1">
+      <div className="flex items-baseline">
         <NavLink href="/" title="Home" active={!inBlog && !inContact} />
         <NavLinkSeparator />
         <NavLink href="/blog" title="Blog" active={inBlog} />
@@ -35,7 +35,7 @@ type NavLinkProps = {
 function NavLink({ href, title, active }: NavLinkProps) {
   return (
     <Link href={href}>
-      <a className={`${active ? 'text-orange-500 text-xl' : 'text-base'}`}>
+      <a className={`pt-1 ${active ? 'text-orange-500 text-xl' : 'text-base'}`}>
         {title}
       </a>
     </Link>
