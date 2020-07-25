@@ -8,7 +8,7 @@ export default function Contact(): ReactElement {
   return (
     <Layout>
       <Head>
-        <title>{appName}</title>
+        <title>Contact &mdash; {appName}</title>
       </Head>
       <Title>Wanna chat?</Title>
     </Layout>
