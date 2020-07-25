@@ -1,3 +1,4 @@
+import 'lib/progress'
 import { AppProps } from 'next/app'
 import { ReactElement } from 'react'
 import 'styles/global.css'

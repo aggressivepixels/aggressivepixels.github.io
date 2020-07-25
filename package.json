@@ -30,6 +30,7 @@
     "heroicons": "^0.3.7",
     "next": "latest",
     "next-transpile-modules": "^3.3.0",
+    "nprogress": "^0.2.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "typeface-overpass": "^0.0.72"
@@ -38,6 +39,7 @@
     "@testing-library/react": "^10.0.1",
     "@types/jest": "^25.1.4",
     "@types/node": "^13.9.5",
+    "@types/nprogress": "^0.2.0",
     "@types/react": "^16.9.27",
     "@types/testing-library__react": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^2.25.0",
