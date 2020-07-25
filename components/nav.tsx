@@ -1,11 +1,11 @@
 import Link from 'next/link'
-import { ReactElement } from 'react'
 import { useRouter } from 'next/router'
+import { ReactElement } from 'react'
 
 export default function Nav(): ReactElement {
-  const { route } = useRouter()
-  const inBlog = route.startsWith('/blog')
-  const inContact = route.startsWith('/contact')
+  const { asPath } = useRouter()
+  const inBlog = asPath.startsWith('/blog')
+  const inContact = asPath.startsWith('/contact')
 
   return (
     <div className="px-4 py-6">
