@@ -1,6 +1,6 @@
 import { name as appName } from 'app.json'
 import Layout from 'components/layout'
-import { posts, Preview as PreviewModel } from 'lib/posts'
+import { Preview as PreviewModel, previews } from 'lib/posts'
 import { GetStaticProps } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
@@ -49,7 +49,7 @@ function Preview({ title, slug, date, excerpt }: PreviewProps): ReactElement {
           <a className="font-semibold text-2xl text-gray-900">{title}</a>
         </Link>
       </h2>
-      <div dangerouslySetInnerHTML={{ __html: excerpt }} />
+      <div className="prose" dangerouslySetInnerHTML={{ __html: excerpt }} />
       <Link href="/blog/[slug]" as={`/blog/${slug}`}>
         <a className="leading-loose text-orange-500">Read more &rarr;</a>
       </Link>
@@ -58,5 +58,5 @@ function Preview({ title, slug, date, excerpt }: PreviewProps): ReactElement {
 }
 
 export const getStaticProps: GetStaticProps<Props> = async () => ({
-  props: { posts },
+  props: { posts: previews },
 })

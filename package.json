@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@prefresh/next": "^0.3.2",
+    "@tailwindcss/typography": "^0.2.0",
     "date-fns": "^2.15.0",
     "fp-ts": "^2.7.1",
     "gray-matter": "^4.0.2",
@@ -42,7 +43,8 @@
     "react-ssr-prepass": "npm:preact-ssr-prepass@^1.0.1",
     "remark": "^12.0.1",
     "remark-html": "^12.0.0",
-    "typeface-overpass": "^0.0.72"
+    "typeface-overpass": "^0.0.72",
+    "typeface-overpass-mono": "^0.0.71"
   },
   "devDependencies": {
     "@testing-library/react": "^10.0.1",

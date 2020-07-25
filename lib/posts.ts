@@ -42,7 +42,7 @@ export const posts: Post[] = files.map((f) => {
   const file = matter.read(filePath)
   const frontMatter = FrontMatter.decode(file.data)
   if (E.isLeft(frontMatter)) {
-    throw frontMatter.left[0].context
+    throw new Error(frontMatter.left.map(({ message }) => message).join(', '))
   }
 
   if (!file.content.includes(excerptSeparator)) {
