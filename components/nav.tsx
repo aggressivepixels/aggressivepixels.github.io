@@ -1,55 +1,47 @@
 import Link from 'next/link'
+import { ReactElement } from 'react'
 import { useRouter } from 'next/router'
-import { ReactElement, useState } from 'react'
-import { MenuAlt1 } from 'heroicons/react/outline'
-import { name as appName } from 'app.json'
 
 export default function Nav(): ReactElement {
-  const [open, setOpen] = useState(false)
+  const { route } = useRouter()
+  const inBlog = route.startsWith('/blog')
+  const inContact = route.startsWith('/contact')
 
   return (
-    <header className="bg-white border-b">
-      <nav>
-        <div className="flex items-center justify-between px-2">
-          <Link href="/">
-            <a className="uppercase font-semibold text-lg text-orange-500 px-2 pt-2 pb-1">
-              {appName}
-            </a>
-          </Link>
-          <button
-            type="button"
-            className="mx-1 my-2 text-gray-600 focus:text-orange-500 hover:text-orange-500 focus:outline-none"
-            onClick={() => setOpen((prevOpen) => !prevOpen)}
-          >
-            <MenuAlt1 className="w-6 h-6 mx-1 my-2" />
-          </button>
-        </div>
-        <div className={`flex flex-col pb-3 ${open ? 'block' : 'hidden'}`}>
-          <NavLink title="Home" href="/" />
-          <NavLink title="Blog" href="/blog" />
-        </div>
-      </nav>
-    </header>
+    <div className="px-4 py-6">
+      <Link href="/">
+        <a className="uppercase font-semibold text-xl pt-1 text-gray-900">
+          Aggressive
+          <span className="text-orange-500">Pixels</span>
+        </a>
+      </Link>
+      <div className="flex items-baseline pt-1">
+        <NavLink href="/" title="Home" active={!inBlog && !inContact} />
+        <NavLinkSeparator />
+        <NavLink href="/blog" title="Blog" active={inBlog} />
+        <NavLinkSeparator />
+        <NavLink href="/contact" title="Contact" active={inContact} />
+      </div>
+    </div>
   )
 }
 
 type NavLinkProps = {
-  title: string
   href: string
+  title: string
+  active: boolean
 }
 
-function NavLink({ title, href }: NavLinkProps) {
-  const { route } = useRouter()
-
+function NavLink({ href, title, active }: NavLinkProps) {
   return (
     <Link href={href}>
-      <a
-        className={`font-semibold uppercase mx-3 pt-2 pb-1 mt-1 hover:text-orange-500 focus:text-orange-500 text-center ${
-          route == href ? 'text-orange-500' : 'text-gray-500'
-        }`}
-      >
+      <a className={`${active ? 'text-orange-500 text-xl' : 'text-base'}`}>
         {title}
       </a>
     </Link>
   )
+}
+
+function NavLinkSeparator() {
+  return <span className="w-3" />
 }

@@ -4,13 +4,13 @@ import { name as appName } from 'app.json'
 import Layout from 'components/layout'
 import Title from 'components/title'
 
-export default function Blog(): ReactElement {
+export default function Contact(): ReactElement {
   return (
     <Layout>
       <Head>
-        <title>Blog &mdash; {appName}</title>
+        <title>{appName}</title>
       </Head>
-      <Title>Latest post</Title>
+      <Title>Wanna chat?</Title>
     </Layout>
   )
 }
