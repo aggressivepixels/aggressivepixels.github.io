@@ -8,6 +8,7 @@ module.exports = withPrefresh({
       const test = /[\\/]node_modules[\\/](preact|preact-render-to-string|preact-context-provider)[\\/]/
       if (cacheGroups.framework) {
         cacheGroups.preact = Object.assign({}, cacheGroups.framework, { test })
+        cacheGroups.commons.name = 'framework'
       }
     }
 
