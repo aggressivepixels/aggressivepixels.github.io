@@ -12,7 +12,7 @@ export default function Contact(): ReactElement {
         <title>Not found &mdash; {appName}</title>
       </Head>
       <Title>Not found</Title>
-      <p className="my-6">
+      <p className="my-4">
         The page you were looking for doesn&rsquo;t seem to exist.
       </p>
       <Link href="/">
