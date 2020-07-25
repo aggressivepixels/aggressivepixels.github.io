@@ -42,16 +42,18 @@ type PreviewProps = PreviewModel
 
 function Preview({ title, slug, date, excerpt }: PreviewProps): ReactElement {
   return (
-    <article className="leading-relaxed py-4">
+    <article className="space-y-1 py-4">
       <time>{date}</time>
       <h2>
         <Link href="/blog/[slug]" as={`/blog/${slug}`}>
-          <a className="font-semibold text-2xl text-gray-900">{title}</a>
+          <a className="font-semibold leading-snug text-2xl text-gray-900">
+            {title}
+          </a>
         </Link>
       </h2>
       <div className="prose" dangerouslySetInnerHTML={{ __html: excerpt }} />
       <Link href="/blog/[slug]" as={`/blog/${slug}`}>
-        <a className="leading-loose text-orange-500">Read more &rarr;</a>
+        <a className="block text-orange-500">Read more &rarr;</a>
       </Link>
     </article>
   )
