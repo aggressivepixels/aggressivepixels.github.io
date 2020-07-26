@@ -1,8 +1,8 @@
 import { name as appName } from 'app.json'
 import Layout from 'components/layout'
 import Title from 'components/title'
+import * as E from 'fp-ts/lib/Either'
 import { pipe } from 'fp-ts/lib/function'
-import * as O from 'fp-ts/lib/Option'
 import * as TE from 'fp-ts/lib/TaskEither'
 import { getPost, getSlugs, Post as PostModel } from 'lib/posts'
 import { unsafeToPromise } from 'lib/task-either-utils'
@@ -37,10 +37,10 @@ type Params = {
 
 export const getStaticProps: GetStaticProps<Props, Params> = ({ params }) =>
   pipe(
-    O.fromNullable(params),
-    O.map((p) => p.slug),
-    TE.fromOption(() => new Error('params were undefined')),
-    TE.chain(getPost),
+    params,
+    E.fromNullable(new Error('params were undefined')),
+    TE.fromEither,
+    TE.chain(({ slug }) => getPost(slug)),
     TE.map((post) => ({ props: { post } })),
     unsafeToPromise
   )()
