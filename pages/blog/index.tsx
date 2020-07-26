@@ -1,17 +1,20 @@
 import { name as appName } from 'app.json'
 import Layout from 'components/layout'
-import { Preview as PreviewModel, previews } from 'lib/posts'
+import { pipe } from 'fp-ts/lib/function'
+import * as TE from 'fp-ts/lib/TaskEither'
+import { getPreviews, Preview as PreviewModel } from 'lib/posts'
+import { unsafeToPromise } from 'lib/task-either-utils'
 import { GetStaticProps } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 import { ReactElement } from 'react'
 
 type Props = {
-  posts: PreviewModel[]
+  previews: PreviewModel[]
 }
 
-export default function Blog({ posts }: Props): ReactElement {
-  const [latest, ...rest] = posts
+export default function Blog({ previews }: Props): ReactElement {
+  const [latest, ...rest] = previews
 
   return (
     <Layout>
@@ -59,6 +62,9 @@ function Preview({ title, slug, date, excerpt }: PreviewProps): ReactElement {
   )
 }
 
-export const getStaticProps: GetStaticProps<Props> = async () => ({
-  props: { posts: previews },
-})
+export const getStaticProps: GetStaticProps<Props> = () =>
+  pipe(
+    getPreviews(),
+    TE.map((previews) => ({ props: { previews } })),
+    unsafeToPromise
+  )()

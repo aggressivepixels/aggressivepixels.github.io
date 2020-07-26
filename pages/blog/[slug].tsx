@@ -2,12 +2,13 @@ import { name as appName } from 'app.json'
 import Layout from 'components/layout'
 import Title from 'components/title'
 import { pipe } from 'fp-ts/lib/function'
+import * as O from 'fp-ts/lib/Option'
 import * as TE from 'fp-ts/lib/TaskEither'
-import { getSlugs, Post as PostModel, posts } from 'lib/posts'
+import { getPost, getSlugs, Post as PostModel } from 'lib/posts'
+import { unsafeToPromise } from 'lib/task-either-utils'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import Head from 'next/head'
 import { ReactElement } from 'react'
-import { unsafeToPromise } from 'lib/task-either-utils'
 
 type Props = {
   post: PostModel
@@ -30,24 +31,23 @@ export default function Post({ post }: Props): ReactElement {
   )
 }
 
-export const getStaticProps: GetStaticProps<Props, { slug: string }> = async ({
-  params,
-}) => {
-  if (!params) {
-    throw new Error('no params received')
-  }
-
-  const post = posts.find((p) => p.slug === params.slug)
-  if (!post) {
-    throw new Error('post not found')
-  }
-
-  return { props: { post } }
+type Params = {
+  slug: string
 }
+
+export const getStaticProps: GetStaticProps<Props, Params> = ({ params }) =>
+  pipe(
+    O.fromNullable(params),
+    O.map((p) => p.slug),
+    TE.fromOption(() => new Error('params were undefined')),
+    TE.chain(getPost),
+    TE.map((post) => ({ props: { post } })),
+    unsafeToPromise
+  )()
 
 export const getStaticPaths: GetStaticPaths = () =>
   pipe(
-    getSlugs,
+    getSlugs(),
     TE.map((slugs) => ({
       paths: slugs.map((s) => `/blog/${s}`),
       fallback: false,

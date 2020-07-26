@@ -2,7 +2,7 @@ import { format } from 'date-fns'
 import * as A from 'fp-ts/lib/Array'
 import * as E from 'fp-ts/lib/Either'
 import { pipe } from 'fp-ts/lib/function'
-import * as IOE from 'fp-ts/lib/IOEither'
+import * as O from 'fp-ts/lib/Option'
 import * as TE from 'fp-ts/lib/TaskEither'
 import fs from 'fs'
 import matter from 'gray-matter'
@@ -16,6 +16,8 @@ import remarkParse from 'remark-parse'
 import remarkRehype from 'remark-rehype'
 import unified from 'unified'
 
+const postsDir = path.join(process.cwd(), 'posts')
+
 const PostDate = new t.Type<Date, string>(
   'PostDate',
   (u): u is Date => u instanceof Date,
@@ -23,95 +25,153 @@ const PostDate = new t.Type<Date, string>(
   (d) => format(d, 'yyyy-MM-dd')
 )
 
-type PostDate = t.TypeOf<typeof PostDate>
-
-export type Preview = {
-  title: string
-  date: string
-  slug: string
-  excerpt: string
-}
-
-export type Post = Preview & { content: string }
-
 const FrontMatter = t.type({
   title: t.string,
   date: PostDate,
 })
 
-type FrontMatter = t.TypeOf<typeof FrontMatter>
+export type Post = {
+  title: string
+  date: string
+  content: string
+}
 
-const postsPath = path.join(process.cwd(), 'posts')
-const files = fs.readdirSync(postsPath)
+export type Preview = {
+  title: string
+  slug: string
+  date: string
+  excerpt: string
+}
 
-export const posts: Post[] = files.map((f) => {
-  const excerptSeparator = '<!-- end excerpt -->'
-  const filePath = path.join(postsPath, f)
-  const slug = f.replace(/\.md$/, '')
-  const file = matter.read(filePath)
-  const frontMatter = FrontMatter.decode(file.data)
-  if (E.isLeft(frontMatter)) {
-    throw new Error(frontMatter.left.map(({ message }) => message).join(', '))
-  }
+export const getSlugs = (): TE.TaskEither<Error, string[]> =>
+  pipe(readdir(postsDir), TE.map(A.map(slugify)))
 
-  if (!file.content.includes(excerptSeparator)) {
-    throw new Error('post is missing excerpt')
-  }
+export const getPost = (slug: string): TE.TaskEither<Error, Post> =>
+  pipe(
+    readPost(slug),
+    TE.map(matter),
+    TE.chain(({ content, data }) =>
+      pipe(
+        FrontMatter.decode(data),
+        TE.fromEither,
+        TE.bimap(
+          (e) => new Error(JSON.stringify(e)),
+          ({ title, date }) => ({ title, date, content })
+        )
+      )
+    ),
+    TE.chain(({ title, date, content }) =>
+      pipe(
+        splitExcerpt(content),
+        O.map(([_excerpt, content]) => ({
+          title,
+          content,
+          date,
+        })),
+        TE.fromOption(() => new Error(`${slug} is missing the excerpt`))
+      )
+    ),
+    TE.chain(({ title, date, content }) =>
+      pipe(
+        markdownToHTML(content),
+        TE.map((markdownContent) => ({
+          title,
+          content: markdownContent,
+          date: PostDate.encode(date),
+        }))
+      )
+    )
+  )
 
-  const [excerpt, ...rest] = file.content.split(excerptSeparator)
-  const content = rest.join(excerptSeparator)
+export const getPreviews = (): TE.TaskEither<Error, Preview[]> =>
+  pipe(
+    getSlugs(),
+    TE.chain(
+      A.traverse(TE.taskEither)((slug: string) =>
+        pipe(
+          readPost(slug),
+          TE.map(matter),
+          TE.chain(({ content, data }) =>
+            pipe(
+              FrontMatter.decode(data),
+              TE.fromEither,
+              TE.bimap(
+                (e) => new Error(JSON.stringify(e)),
+                ({ title, date }) => ({ title, date, content })
+              )
+            )
+          ),
+          TE.chain(({ title, date, content }) =>
+            pipe(
+              splitExcerpt(content),
+              O.map(([excerpt, _content]) => ({
+                title,
+                excerpt,
+                date,
+              })),
+              TE.fromOption(() => new Error(`${slug} is missing the excerpt`))
+            )
+          ),
+          TE.chain(({ title, date, excerpt }) =>
+            pipe(
+              markdownToHTML(excerpt),
+              TE.map((markdownExcerpt) => ({
+                title,
+                slug,
+                excerpt: markdownExcerpt,
+                date: PostDate.encode(date),
+              }))
+            )
+          )
+        )
+      )
+    )
+  )
 
-  function toHTML(s: string) {
-    return unified()
-      .use(remarkParse)
-      .use(remarkRehype)
-      .use(rehypeSlug)
-      .use(rehypeAutolinkHeadings, {
-        behavior: 'wrap',
-      })
-      .use(rehypeHighlight)
-      .use(rehypeStringify)
-      .processSync(s)
-      .toString()
-  }
-
-  return {
-    title: frontMatter.right.title,
-    date: PostDate.encode(frontMatter.right.date),
-    excerpt: toHTML(excerpt),
-    content: toHTML(content),
-    slug,
-  }
-})
-
-export const previews: Preview[] = posts.map(
-  ({ title, date, slug, excerpt }) => ({ title, date, slug, excerpt })
-)
-
-const toError = (u: unknown) => (u instanceof Error ? u : new Error(String(u)))
-
-const getCWD: IOE.IOEither<Error, string> = IOE.tryCatch(
-  () => process.cwd(),
-  toError
-)
-
-const getPostsDir: IOE.IOEither<Error, string> = pipe(
-  getCWD,
-  IOE.map((cwd) => path.join(cwd, 'posts'))
-)
+const readPost = (slug: string): TE.TaskEither<Error, Buffer> =>
+  readFile(path.join(postsDir, slug + '.md'), 'utf8')
 
 const readdir: (pl: fs.PathLike) => TE.TaskEither<Error, string[]> = TE.taskify(
   fs.readdir
 )
 
-const slugify = (s: string) => s.replace(/\.md$/, '')
+const readFile: (
+  pl: fs.PathLike,
+  options: string
+) => TE.TaskEither<Error, Buffer> = TE.taskify(fs.readFile)
 
-const getPosts: TE.TaskEither<Error, string[]> = pipe(
-  TE.fromIOEither(getPostsDir),
-  TE.chain(readdir)
-)
+function slugify(s: string) {
+  return s.replace(/\.md$/, '')
+}
 
-export const getSlugs: TE.TaskEither<Error, string[]> = pipe(
-  getPosts,
-  TE.map(A.map(slugify))
-)
+function markdownToHTML(s: string): TE.TaskEither<Error, string> {
+  return pipe(
+    TE.tryCatch(
+      () =>
+        unified()
+          .use(remarkParse)
+          .use(remarkRehype)
+          .use(rehypeSlug)
+          .use(rehypeAutolinkHeadings, {
+            behavior: 'wrap',
+          })
+          .use(rehypeHighlight)
+          .use(rehypeStringify)
+          .process(s),
+      E.toError
+    ),
+    TE.map((vf) => vf.toString())
+  )
+}
+
+function splitExcerpt(s: string): O.Option<[string, string]> {
+  const separator = '<!-- end excerpt -->'
+
+  if (!s.includes(separator)) {
+    return O.none
+  }
+
+  const [excerpt, ...rest] = s.split(separator)
+  const content = rest.join(separator)
+  return O.some([excerpt, content])
+}
