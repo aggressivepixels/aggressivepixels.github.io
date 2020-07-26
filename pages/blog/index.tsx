@@ -56,7 +56,7 @@ function Preview({ title, slug, date, excerpt }: PreviewProps): ReactElement {
       </h2>
       <div className="prose" dangerouslySetInnerHTML={{ __html: excerpt }} />
       <Link href="/blog/[slug]" as={`/blog/${slug}`}>
-        <a className="block text-orange-500">Read more &rarr;</a>
+        <a className="inline-block text-orange-500">Read more &rarr;</a>
       </Link>
     </article>
   )
