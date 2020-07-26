@@ -48,7 +48,6 @@
     "rehype-stringify": "^8.0.0",
     "remark-parse": "^8.0.3",
     "remark-rehype": "^7.0.0",
-    "remark-stringify": "^8.1.1",
     "typeface-overpass": "^0.0.72",
     "typeface-overpass-mono": "^0.0.71",
     "unified": "^9.1.0"
