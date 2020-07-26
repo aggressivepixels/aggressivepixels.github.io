@@ -9,6 +9,8 @@ import rehypeStringify from 'rehype-stringify'
 import unified from 'unified'
 import remarkRehype from 'remark-rehype'
 import rehypeHighlight from 'rehype-highlight'
+import rehypeSlug from 'rehype-slug'
+import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 
 const PostDate = new t.Type<Date, string>(
   'PostDate',
@@ -59,6 +61,10 @@ export const posts: Post[] = files.map((f) => {
     return unified()
       .use(remarkParse)
       .use(remarkRehype)
+      .use(rehypeSlug)
+      .use(rehypeAutolinkHeadings, {
+        behavior: 'wrap',
+      })
       .use(rehypeHighlight)
       .use(rehypeStringify)
       .processSync(s)

@@ -19,6 +19,24 @@ module.exports = {
           'h2 + h3': {
             marginTop: '-0.5em',
           },
+          'h1 a': {
+            textDecoration: 'none',
+          },
+          'h2 a': {
+            textDecoration: 'none',
+          },
+          'h3 a': {
+            textDecoration: 'none',
+          },
+          'h4 a': {
+            textDecoration: 'none',
+          },
+          'h5 a': {
+            textDecoration: 'none',
+          },
+          'h6 a': {
+            textDecoration: 'none',
+          },
           code: {
             color: null,
             fontWeight: null,
