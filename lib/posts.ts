@@ -4,8 +4,11 @@ import fs from 'fs'
 import matter from 'gray-matter'
 import * as t from 'io-ts'
 import path from 'path'
-import remark from 'remark'
-import html from 'remark-html'
+import remarkParse from 'remark-parse'
+import rehypeStringify from 'rehype-stringify'
+import unified from 'unified'
+import remarkRehype from 'remark-rehype'
+import rehypeHighlight from 'rehype-highlight'
 
 const PostDate = new t.Type<Date, string>(
   'PostDate',
@@ -53,7 +56,13 @@ export const posts: Post[] = files.map((f) => {
   const content = rest.join(excerptSeparator)
 
   function toHTML(s: string) {
-    return remark().use(html).processSync(s).toString()
+    return unified()
+      .use(remarkParse)
+      .use(remarkRehype)
+      .use(rehypeHighlight)
+      .use(rehypeStringify)
+      .processSync(s)
+      .toString()
   }
 
   return {

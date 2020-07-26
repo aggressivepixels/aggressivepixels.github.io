@@ -1,3 +1,4 @@
+import 'highlight.js/styles/atelier-sulphurpool-light.css'
 import 'lib/progress'
 import { AppProps } from 'next/app'
 import { ReactElement } from 'react'
