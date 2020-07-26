@@ -1,16 +1,20 @@
 import { format } from 'date-fns'
+import * as A from 'fp-ts/lib/Array'
 import * as E from 'fp-ts/lib/Either'
+import { pipe } from 'fp-ts/lib/function'
+import * as IOE from 'fp-ts/lib/IOEither'
+import * as TE from 'fp-ts/lib/TaskEither'
 import fs from 'fs'
 import matter from 'gray-matter'
 import * as t from 'io-ts'
 import path from 'path'
-import remarkParse from 'remark-parse'
-import rehypeStringify from 'rehype-stringify'
-import unified from 'unified'
-import remarkRehype from 'remark-rehype'
+import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import rehypeHighlight from 'rehype-highlight'
 import rehypeSlug from 'rehype-slug'
-import rehypeAutolinkHeadings from 'rehype-autolink-headings'
+import rehypeStringify from 'rehype-stringify'
+import remarkParse from 'remark-parse'
+import remarkRehype from 'remark-rehype'
+import unified from 'unified'
 
 const PostDate = new t.Type<Date, string>(
   'PostDate',
@@ -82,4 +86,32 @@ export const posts: Post[] = files.map((f) => {
 
 export const previews: Preview[] = posts.map(
   ({ title, date, slug, excerpt }) => ({ title, date, slug, excerpt })
+)
+
+const toError = (u: unknown) => (u instanceof Error ? u : new Error(String(u)))
+
+const getCWD: IOE.IOEither<Error, string> = IOE.tryCatch(
+  () => process.cwd(),
+  toError
+)
+
+const getPostsDir: IOE.IOEither<Error, string> = pipe(
+  getCWD,
+  IOE.map((cwd) => path.join(cwd, 'posts'))
+)
+
+const readdir: (pl: fs.PathLike) => TE.TaskEither<Error, string[]> = TE.taskify(
+  fs.readdir
+)
+
+const slugify = (s: string) => s.replace(/\.md$/, '')
+
+const getPosts: TE.TaskEither<Error, string[]> = pipe(
+  TE.fromIOEither(getPostsDir),
+  TE.chain(readdir)
+)
+
+export const getSlugs: TE.TaskEither<Error, string[]> = pipe(
+  getPosts,
+  TE.map(A.map(slugify))
 )

@@ -1,10 +1,13 @@
 import { name as appName } from 'app.json'
 import Layout from 'components/layout'
+import Title from 'components/title'
+import { pipe } from 'fp-ts/lib/function'
+import * as TE from 'fp-ts/lib/TaskEither'
+import { getSlugs, Post as PostModel, posts } from 'lib/posts'
+import { GetStaticPaths, GetStaticProps } from 'next'
 import Head from 'next/head'
 import { ReactElement } from 'react'
-import { Post as PostModel, posts, previews } from 'lib/posts'
-import Title from 'components/title'
-import { GetStaticProps, GetStaticPaths } from 'next'
+import { unsafeToPromise } from 'lib/task-either-utils'
 
 type Props = {
   post: PostModel
@@ -42,9 +45,12 @@ export const getStaticProps: GetStaticProps<Props, { slug: string }> = async ({
   return { props: { post } }
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  return {
-    paths: previews.map((p) => `/blog/${p.slug}`),
-    fallback: false,
-  }
-}
+export const getStaticPaths: GetStaticPaths = () =>
+  pipe(
+    getSlugs,
+    TE.map((slugs) => ({
+      paths: slugs.map((s) => `/blog/${s}`),
+      fallback: false,
+    })),
+    unsafeToPromise
+  )()
