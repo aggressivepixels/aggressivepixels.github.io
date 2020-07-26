@@ -14,16 +14,15 @@ import rehypeStringify from 'rehype-stringify'
 import remarkParse from 'remark-parse'
 import remarkRehype from 'remark-rehype'
 import unified from 'unified'
+import { serializedDateFormat } from './post-date-format'
 
 const postsDir = path.join(process.cwd(), 'posts')
-
-export const dateFormat = 'yyyy-MM-dd'
 
 const PostDate = new t.Type<Date, string>(
   'PostDate',
   (u): u is Date => u instanceof Date,
   (u, c) => (u instanceof Date ? t.success(u) : t.failure(u, c)),
-  (d) => format(d, dateFormat)
+  (d) => format(d, serializedDateFormat)
 )
 
 const FrontMatter = t.type({

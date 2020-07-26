@@ -1,7 +1,9 @@
 import { name as appName } from 'app.json'
 import Layout from 'components/layout'
+import { format, parse } from 'date-fns'
 import { pipe } from 'fp-ts/lib/function'
 import * as TE from 'fp-ts/lib/TaskEither'
+import { displayDateFormat, serializedDateFormat } from 'lib/post-date-format'
 import { getPreviews, Preview as PreviewModel } from 'lib/posts'
 import { unsafeToPromise } from 'lib/task-either-utils'
 import { GetStaticProps } from 'next'
@@ -46,7 +48,9 @@ type PreviewProps = PreviewModel
 function Preview({ title, slug, date, excerpt }: PreviewProps): ReactElement {
   return (
     <article className="space-y-1 py-4">
-      <time>{date}</time>
+      <time dateTime={date}>
+        {format(parse(date, serializedDateFormat, 0), displayDateFormat)}
+      </time>
       <h2>
         <Link href="/blog/[slug]" as={`/blog/${slug}`}>
           <a className="font-semibold leading-snug text-2xl text-gray-900">
