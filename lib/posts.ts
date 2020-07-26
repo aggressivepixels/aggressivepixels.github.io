@@ -2,7 +2,6 @@ import { format } from 'date-fns'
 import * as A from 'fp-ts/lib/Array'
 import * as E from 'fp-ts/lib/Either'
 import { pipe } from 'fp-ts/lib/function'
-import * as O from 'fp-ts/lib/Option'
 import * as TE from 'fp-ts/lib/TaskEither'
 import fs from 'fs'
 import matter from 'gray-matter'
@@ -18,11 +17,13 @@ import unified from 'unified'
 
 const postsDir = path.join(process.cwd(), 'posts')
 
+export const dateFormat = 'yyyy-MM-dd'
+
 const PostDate = new t.Type<Date, string>(
   'PostDate',
   (u): u is Date => u instanceof Date,
   (u, c) => (u instanceof Date ? t.success(u) : t.failure(u, c)),
-  (d) => format(d, 'yyyy-MM-dd')
+  (d) => format(d, dateFormat)
 )
 
 const FrontMatter = t.type({
@@ -48,27 +49,15 @@ export const getSlugs = (): TE.TaskEither<Error, string[]> =>
 
 export const getPost = (slug: string): TE.TaskEither<Error, Post> =>
   pipe(
-    readPost(slug),
-    TE.map(matter),
-    TE.chain(({ content, data }) =>
-      pipe(
-        FrontMatter.decode(data),
-        TE.fromEither,
-        TE.bimap(
-          (e) => new Error(JSON.stringify(e)),
-          ({ title, date }) => ({ title, date, content })
-        )
-      )
-    ),
+    readPostWithFrontMatter(slug),
     TE.chain(({ title, date, content }) =>
       pipe(
-        splitExcerpt(content),
-        O.map(([_excerpt, content]) => ({
+        splitExcerpt(content, title),
+        TE.map(([_excerpt, content]) => ({
           title,
           content,
           date,
-        })),
-        TE.fromOption(() => new Error(`${slug} is missing the excerpt`))
+        }))
       )
     ),
     TE.chain(({ title, date, content }) =>
@@ -84,47 +73,46 @@ export const getPost = (slug: string): TE.TaskEither<Error, Post> =>
   )
 
 export const getPreviews = (): TE.TaskEither<Error, Preview[]> =>
+  pipe(getSlugs(), TE.chain(A.traverse(TE.taskEither)(getPreview)))
+
+const getPreview = (slug: string) =>
   pipe(
-    getSlugs(),
-    TE.chain(
-      A.traverse(TE.taskEither)((slug: string) =>
-        pipe(
-          readPost(slug),
-          TE.map(matter),
-          TE.chain(({ content, data }) =>
-            pipe(
-              FrontMatter.decode(data),
-              TE.fromEither,
-              TE.bimap(
-                (e) => new Error(JSON.stringify(e)),
-                ({ title, date }) => ({ title, date, content })
-              )
-            )
-          ),
-          TE.chain(({ title, date, content }) =>
-            pipe(
-              splitExcerpt(content),
-              O.map(([excerpt, _content]) => ({
-                title,
-                excerpt,
-                date,
-              })),
-              TE.fromOption(() => new Error(`${slug} is missing the excerpt`))
-            )
-          ),
-          TE.chain(({ title, date, excerpt }) =>
-            pipe(
-              markdownToHTML(excerpt),
-              TE.map((markdownExcerpt) => ({
-                title,
-                slug,
-                excerpt: markdownExcerpt,
-                date: PostDate.encode(date),
-              }))
-            )
-          )
-        )
+    readPostWithFrontMatter(slug),
+    TE.chain(({ title, date, content }) =>
+      pipe(
+        splitExcerpt(content, title),
+        TE.map(([excerpt, _content]) => ({
+          title,
+          excerpt,
+          date,
+        }))
       )
+    ),
+    TE.chain(({ title, date, excerpt }) =>
+      pipe(
+        markdownToHTML(excerpt),
+        TE.map((markdownExcerpt) => ({
+          title,
+          slug,
+          excerpt: markdownExcerpt,
+          date: PostDate.encode(date),
+        }))
+      )
+    )
+  )
+
+const readPostWithFrontMatter = (slug: string) =>
+  pipe(readPost(slug), TE.map(matter), TE.chain(extractFrontMatter))
+
+const extractFrontMatter = <I extends matter.Input>({
+  content,
+  data,
+}: matter.GrayMatterFile<I>) =>
+  pipe(
+    TE.fromEither(FrontMatter.decode(data)),
+    TE.bimap(
+      (e) => new Error(JSON.stringify(e)),
+      ({ title, date }) => ({ title, date, content })
     )
   )
 
@@ -164,14 +152,17 @@ function markdownToHTML(s: string): TE.TaskEither<Error, string> {
   )
 }
 
-function splitExcerpt(s: string): O.Option<[string, string]> {
+function splitExcerpt(
+  s: string,
+  title: string
+): TE.TaskEither<Error, [string, string]> {
   const separator = '<!-- end excerpt -->'
 
   if (!s.includes(separator)) {
-    return O.none
+    return TE.left(new Error(`${title} is missing excerpt`))
   }
 
   const [excerpt, ...rest] = s.split(separator)
   const content = rest.join(separator)
-  return O.some([excerpt, content])
+  return TE.right([excerpt, content])
 }
