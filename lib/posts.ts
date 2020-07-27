@@ -14,6 +14,7 @@ import remarkRehype from 'remark-rehype'
 import unified from 'unified'
 
 const POSTS_DIR = path.join(process.cwd(), 'posts')
+const EXCERPT_SEPARATOR = '<!-- end excerpt -->'
 
 export type Post = {
   title: string
@@ -107,15 +108,12 @@ function unslugify(slug: string): string {
 }
 
 function splitExcerpt(rawContent: string): [string, string] {
-  const separator = '<!-- end excerpt -->'
-
-  if (!rawContent.includes(separator)) {
+  if (!rawContent.includes(EXCERPT_SEPARATOR)) {
     throw new Error('missing excerpt')
   }
 
-  const [excerpt, ...rest] = rawContent.split(separator)
-  const content = rest.join(separator)
-  return [excerpt, content]
+  const [excerpt, ...rest] = rawContent.split(EXCERPT_SEPARATOR)
+  return [excerpt, rest.join(EXCERPT_SEPARATOR)]
 }
 
 function markdownToHTML(markdown: string): Promise<string> {
