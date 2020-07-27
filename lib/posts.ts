@@ -3,6 +3,7 @@ import * as Either from 'fp-ts/lib/Either'
 import { promises as fs } from 'fs'
 import matter from 'gray-matter'
 import * as t from 'io-ts'
+import { PathReporter } from 'io-ts/lib/PathReporter'
 import { serializedDateFormat } from 'lib/post-date-format'
 import path from 'path'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
@@ -94,9 +95,13 @@ async function readPost(slug: string): Promise<ReadPostResult> {
   const filepath = path.join(POSTS_DIR, unslugify(slug))
   const file = await fs.readFile(filepath)
   const { data, content: rawContent } = matter(file)
-  const { title, date } = fromDecoder(FrontMatter, data)
 
-  return { title, date, rawContent }
+  try {
+    const { title, date } = fromDecoder(FrontMatter, data)
+    return { title, date, rawContent }
+  } catch (err) {
+    throw `parsing front matter: ${err}`
+  }
 }
 
 function slugify(filename: string): string {
@@ -109,7 +114,7 @@ function unslugify(slug: string): string {
 
 function splitExcerpt(rawContent: string): [string, string] {
   if (!rawContent.includes(EXCERPT_SEPARATOR)) {
-    throw new Error('missing excerpt')
+    throw 'missing excerpt'
   }
 
   const [excerpt, ...rest] = rawContent.split(EXCERPT_SEPARATOR)
@@ -133,7 +138,7 @@ function markdownToHTML(markdown: string): Promise<string> {
 function fromDecoder<I, A>(decoder: t.Decoder<I, A>, value: I): A {
   const result = decoder.decode(value)
   if (Either.isLeft(result)) {
-    throw new Error(JSON.stringify(result.left))
+    throw PathReporter.report(result).join(', ')
   }
 
   return result.right
