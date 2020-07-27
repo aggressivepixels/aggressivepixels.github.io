@@ -1,4 +1,4 @@
-import { format } from 'date-fns'
+import { format, parse, compareDesc } from 'date-fns'
 import * as Either from 'fp-ts/lib/Either'
 import { promises as fs } from 'fs'
 import matter from 'gray-matter'
@@ -65,7 +65,14 @@ export async function getPost(slug: string): Promise<Post> {
 
 export async function getPreviews(): Promise<Preview[]> {
   const slugs = await getSlugs()
-  return Promise.all(slugs.map(getPreview))
+  return Promise.all(slugs.map(getPreview)).then((previews) =>
+    previews.sort((a, b) =>
+      compareDesc(
+        parse(a.date, serializedDateFormat, 0),
+        parse(b.date, serializedDateFormat, 0)
+      )
+    )
+  )
 }
 
 async function getPreview(slug: string): Promise<Preview> {
