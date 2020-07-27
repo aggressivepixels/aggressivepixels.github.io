@@ -1,11 +1,8 @@
 import { name as appName } from 'app.json'
 import Layout from 'components/layout'
 import { format, parse } from 'date-fns'
-import { pipe } from 'fp-ts/lib/function'
-import * as TE from 'fp-ts/lib/TaskEither'
 import { displayDateFormat, serializedDateFormat } from 'lib/post-date-format'
 import { getPreviews, Preview as PreviewModel } from 'lib/posts'
-import { unsafeToPromise } from 'lib/task-either-utils'
 import { GetStaticProps } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
@@ -14,6 +11,11 @@ import { ReactElement } from 'react'
 type Props = {
   previews: PreviewModel[]
 }
+
+type PreviewProps = PreviewModel
+
+export const getStaticProps: GetStaticProps<Props> = () =>
+  getPreviews().then((previews) => ({ props: { previews } }))
 
 export default function Blog({ previews }: Props): ReactElement {
   const [latest, ...rest] = previews
@@ -43,8 +45,6 @@ export default function Blog({ previews }: Props): ReactElement {
   )
 }
 
-type PreviewProps = PreviewModel
-
 function Preview({ title, slug, date, excerpt }: PreviewProps): ReactElement {
   return (
     <article className="space-y-1 py-4">
@@ -65,10 +65,3 @@ function Preview({ title, slug, date, excerpt }: PreviewProps): ReactElement {
     </article>
   )
 }
-
-export const getStaticProps: GetStaticProps<Props> = () =>
-  pipe(
-    getPreviews(),
-    TE.map((previews) => ({ props: { previews } })),
-    unsafeToPromise
-  )()
