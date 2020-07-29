@@ -9,16 +9,6 @@ module.exports = {
     typography: (theme) => ({
       default: {
         css: {
-          h2: {
-            marginTop: '1em',
-          },
-          h3: {
-            marginTop: '0.75em',
-            marginBottom: '0.8em',
-          },
-          'h2 + h3': {
-            marginTop: '-0.5em',
-          },
           'h1 a': {
             textDecoration: 'none',
           },
