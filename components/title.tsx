@@ -1,13 +1,13 @@
-import { ReactElement } from 'react'
+import { ReactElement, ReactNode } from 'react'
 
 type Props = {
-  children: string
+  children: ReactNode
 }
 
 export default function Title({ children }: Props): ReactElement {
   return (
-    <h1 className="font-semibold leading-tight text-gray-900 text-3xl sm:text-4xl">
+    <div className="font-semibold text-gray-900 text-3xl sm:text-4xl">
       {children}
-    </h1>
+    </div>
   )
 }

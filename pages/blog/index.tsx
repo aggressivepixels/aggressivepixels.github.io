@@ -7,6 +7,7 @@ import { GetStaticProps } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 import { ReactElement } from 'react'
+import Title from 'components/title'
 
 type Props = {
   previews: PreviewModel[]
@@ -25,15 +26,11 @@ export default function Blog({ previews }: Props): ReactElement {
       <Head>
         <title>Blog &mdash; {appName}</title>
       </Head>
-      <p className="font-semibold text-3xl sm:text-4xl text-gray-900">
-        Latest post
-      </p>
-      <div className="border-b border-gray-200">
+      <Title>Latest post</Title>
+      <div className="border-b border-gray-200 mb-4">
         <Preview {...latest} />
       </div>
-      <p className="font-semibold text-3xl sm:text-4xl text-gray-900 pt-4">
-        Older posts
-      </p>
+      <Title>Older posts</Title>
       <ul className="pb-4">
         {rest.map((p) => (
           <li key={p.slug}>

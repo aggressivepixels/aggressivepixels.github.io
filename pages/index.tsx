@@ -10,7 +10,9 @@ export default function Home(): ReactElement {
       <Head>
         <title>{appName}</title>
       </Head>
-      <Title>Hello!</Title>
+      <Title>
+        <h1>Hello!</h1>
+      </Title>
       <p>My name&lsquo;s Jonathan, and I&lsquo;m a web developer.</p>
       <p>There will be some stuff here later.</p>
     </Layout>

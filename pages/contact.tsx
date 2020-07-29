@@ -10,7 +10,9 @@ export default function Contact(): ReactElement {
       <Head>
         <title>Contact &mdash; {appName}</title>
       </Head>
-      <Title>Wanna chat?</Title>
+      <Title>
+        <h1>Wanna chat?</h1>
+      </Title>
     </Layout>
   )
 }
