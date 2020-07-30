@@ -9,24 +9,6 @@ module.exports = {
     typography: (theme) => ({
       default: {
         css: {
-          'h1 a': {
-            textDecoration: 'none',
-          },
-          'h2 a': {
-            textDecoration: 'none',
-          },
-          'h3 a': {
-            textDecoration: 'none',
-          },
-          'h4 a': {
-            textDecoration: 'none',
-          },
-          'h5 a': {
-            textDecoration: 'none',
-          },
-          'h6 a': {
-            textDecoration: 'none',
-          },
           code: {
             color: null,
             fontWeight: null,
@@ -72,6 +54,7 @@ module.exports = {
   },
   variants: {
     typography: [],
+    display: ['responsive', 'group-hover'],
   },
   plugins: [
     require('@tailwindcss/typography')({

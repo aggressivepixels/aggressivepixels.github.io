@@ -1,10 +1,12 @@
-import { format, parse, compareDesc } from 'date-fns'
+import { compareDesc, format, parse } from 'date-fns'
 import * as Either from 'fp-ts/lib/Either'
 import { promises as fs } from 'fs'
 import matter from 'gray-matter'
 import * as t from 'io-ts'
 import { PathReporter } from 'io-ts/lib/PathReporter'
 import { serializedDateFormat } from 'lib/post-date-format'
+import { H } from 'mdast-util-to-hast'
+import all from 'mdast-util-to-hast/lib/all'
 import path from 'path'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import rehypeHighlight from 'rehype-highlight'
@@ -13,6 +15,7 @@ import rehypeStringify from 'rehype-stringify'
 import remarkParse from 'remark-parse'
 import remarkRehype from 'remark-rehype'
 import unified from 'unified'
+import { Node } from 'unist'
 
 const POSTS_DIR = path.join(process.cwd(), 'posts')
 const EXCERPT_SEPARATOR = '<!-- end excerpt -->'
@@ -131,15 +134,67 @@ function splitExcerpt(rawContent: string): [string, string] {
 function markdownToHTML(markdown: string): Promise<string> {
   return unified()
     .use(remarkParse)
-    .use(remarkRehype)
+    .use(remarkRehype, {
+      handlers: {
+        heading,
+      },
+    })
     .use(rehypeSlug)
     .use(rehypeAutolinkHeadings, {
-      behavior: 'wrap',
+      behavior: 'append',
+      properties: {
+        className: ['inline-block', 'ml-2'],
+      },
+      content: {
+        type: 'element',
+        tagName: 'span',
+        properties: {
+          className: [
+            'hidden',
+            'text-gray-500',
+            'hover:text-gray-900',
+            'group-hover:inline-block',
+            'h-5',
+            'w-5',
+            'group',
+          ],
+        },
+        children: [
+          {
+            type: 'element',
+            tagName: 'svg',
+            properties: {
+              fill: 'none',
+              'stroke-linecap': 'round',
+              'stroke-linejoin': 'round',
+              'stroke-width': '2',
+              viewBox: '0 0 24 24',
+              stroke: 'currentColor',
+              className: ['inline-block', 'mb-1'],
+            },
+            children: [
+              {
+                type: 'element',
+                tagName: 'path',
+                properties: {
+                  d:
+                    'M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1',
+                },
+                children: [],
+              },
+            ],
+          },
+        ],
+      },
     })
     .use(rehypeHighlight)
     .use(rehypeStringify)
     .process(markdown)
     .then((vfile) => vfile.toString())
+}
+
+function heading(h: H, node: Node) {
+  return h(node, `h${node.depth}`, { class: 'group' }, all(h, node))
 }
 
 function fromDecoder<I, A>(decoder: t.Decoder<I, A>, value: I): A {
