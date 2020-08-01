@@ -28,6 +28,7 @@ export default function Nav(): ReactElement {
             }`}
             onClick={() => setMenuOpen(!menuOpen)}
             type="button"
+            aria-label="Menu"
           >
             <Menu />
           </button>
