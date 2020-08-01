@@ -22,6 +22,7 @@ const EXCERPT_SEPARATOR = '<!-- end excerpt -->'
 
 export type Post = {
   title: string
+  slug: string
   date: string
   content: string
 }
@@ -58,6 +59,7 @@ export async function getPost(slug: string): Promise<Post> {
 
     return {
       title,
+      slug,
       content,
       date: PostDate.encode(date),
     }
