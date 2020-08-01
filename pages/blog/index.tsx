@@ -1,13 +1,11 @@
 import { name as appName } from 'app.json'
 import Layout from 'components/layout'
-import { format, parse } from 'date-fns'
-import { displayDateFormat, serializedDateFormat } from 'lib/post-date-format'
+import Title from 'components/title'
 import { getPreviews, Preview as PreviewType } from 'lib/posts'
 import { GetStaticProps } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 import { ReactElement } from 'react'
-import Title from 'components/title'
 
 type Props = {
   previews: PreviewType[]
@@ -42,12 +40,16 @@ export default function Blog({ previews }: Props): ReactElement {
   )
 }
 
-function Preview({ title, slug, date, excerpt }: PreviewProps): ReactElement {
+function Preview({
+  title,
+  slug,
+  date,
+  displayDate,
+  excerpt,
+}: PreviewProps): ReactElement {
   return (
     <article className="space-y-1 py-4">
-      <time dateTime={date}>
-        {format(parse(date, serializedDateFormat, 0), displayDateFormat)}
-      </time>
+      <time dateTime={date}>{displayDate}</time>
       <h2>
         <Link href="/blog/[slug]" as={`/blog/${slug}`}>
           <a className="font-semibold leading-snug text-2xl text-gray-900">

@@ -4,7 +4,6 @@ import { promises as fs } from 'fs'
 import matter from 'gray-matter'
 import * as t from 'io-ts'
 import { PathReporter } from 'io-ts/lib/PathReporter'
-import { serializedDateFormat } from 'lib/post-date-format'
 import { H } from 'mdast-util-to-hast'
 import all from 'mdast-util-to-hast/lib/all'
 import path from 'path'
@@ -19,11 +18,14 @@ import { Node } from 'unist'
 
 const POSTS_DIR = path.join(process.cwd(), 'posts')
 const EXCERPT_SEPARATOR = '<!-- end excerpt -->'
+const DISPLAY_DATE_FORMAT = "MMMM d',' yyyy"
+const DATE_FORMAT = 'yyyy-MM-dd'
 
 export type Post = {
   title: string
   slug: string
   date: string
+  displayDate: string
   content: string
 }
 
@@ -31,6 +33,7 @@ export type Preview = {
   title: string
   slug: string
   date: string
+  displayDate: string
   excerpt: string
 }
 
@@ -38,7 +41,7 @@ const PostDate = new t.Type<Date, string>(
   'PostDate',
   (u): u is Date => u instanceof Date,
   (u, c) => (u instanceof Date ? t.success(u) : t.failure(u, c)),
-  (d) => format(d, serializedDateFormat)
+  (d) => format(d, DATE_FORMAT)
 )
 
 const FrontMatter = t.type({
@@ -62,6 +65,7 @@ export async function getPost(slug: string): Promise<Post> {
       slug,
       content,
       date: PostDate.encode(date),
+      displayDate: format(date, DISPLAY_DATE_FORMAT),
     }
   } catch (err) {
     throw new Error(`getting post for ${slug}: ${err}`)
@@ -72,10 +76,7 @@ export async function getPreviews(): Promise<Preview[]> {
   const slugs = await getSlugs()
   return Promise.all(slugs.map(getPreview)).then((previews) =>
     previews.sort((a, b) =>
-      compareDesc(
-        parse(a.date, serializedDateFormat, 0),
-        parse(b.date, serializedDateFormat, 0)
-      )
+      compareDesc(parse(a.date, DATE_FORMAT, 0), parse(b.date, DATE_FORMAT, 0))
     )
   )
 }
@@ -91,6 +92,7 @@ async function getPreview(slug: string): Promise<Preview> {
       slug,
       excerpt,
       date: PostDate.encode(date),
+      displayDate: format(date, DISPLAY_DATE_FORMAT),
     }
   } catch (err) {
     throw new Error(`getting preview for ${slug}: ${err}`)
