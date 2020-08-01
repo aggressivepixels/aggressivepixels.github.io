@@ -1,14 +1,13 @@
 import { name as appName } from 'app.json'
 import Layout from 'components/layout'
 import Title from 'components/title'
-import { getPost, getSlugs, Post as PostModel } from 'lib/posts'
+import { getPost, getSlugs, Post as PostType } from 'lib/posts'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import Head from 'next/head'
+import Link from 'next/link'
 import { ReactElement } from 'react'
 
-type Props = {
-  post: PostModel
-}
+type Props = PostType
 
 type Params = {
   slug: string
@@ -19,7 +18,7 @@ export const getStaticProps: GetStaticProps<Props, Params> = ({ params }) => {
     throw new Error('params were undefined')
   }
 
-  return getPost(params.slug).then((post) => ({ props: { post } }))
+  return getPost(params.slug).then((post) => ({ props: post }))
 }
 
 export const getStaticPaths: GetStaticPaths<Params> = () =>
@@ -28,19 +27,25 @@ export const getStaticPaths: GetStaticPaths<Params> = () =>
     fallback: false,
   }))
 
-export default function Post({ post }: Props): ReactElement {
+export default function Post({ title, slug, content }: Props): ReactElement {
   return (
     <Layout>
       <Head>
-        <title>{appName}</title>
+        <title>
+          {title} &mdash; {appName}
+        </title>
       </Head>
       <article>
         <Title>
-          <h1>{post.title}</h1>
+          <h1>
+            <Link href="/blog/[slug]" as={`/blog/${slug}`}>
+              <a>{title}</a>
+            </Link>
+          </h1>
         </Title>
         <div
           className="prose pt-6 pb-12 max-w-none"
-          dangerouslySetInnerHTML={{ __html: post.content }}
+          dangerouslySetInnerHTML={{ __html: content }}
         />
       </article>
     </Layout>
