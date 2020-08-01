@@ -136,7 +136,7 @@ function markdownToHTML(markdown: string): Promise<string> {
     .use(remarkParse)
     .use(remarkRehype, {
       handlers: {
-        heading,
+        heading: groupedHeadings,
       },
     })
     .use(rehypeSlug)
@@ -191,10 +191,10 @@ function markdownToHTML(markdown: string): Promise<string> {
     .use(rehypeStringify)
     .process(markdown)
     .then((vfile) => vfile.toString())
-}
 
-function heading(h: H, node: Node) {
-  return h(node, `h${node.depth}`, { class: 'group' }, all(h, node))
+  function groupedHeadings(h: H, node: Node) {
+    return h(node, `h${node.depth}`, { class: 'group' }, all(h, node))
+  }
 }
 
 function fromDecoder<I, A>(decoder: t.Decoder<I, A>, value: I): A {
