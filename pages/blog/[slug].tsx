@@ -39,7 +39,7 @@ export default function Post({ post }: Props): ReactElement {
           <h1>{post.title}</h1>
         </Title>
         <div
-          className="prose pt-4 pb-12 max-w-none"
+          className="prose pt-6 pb-12 max-w-none"
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
       </article>
