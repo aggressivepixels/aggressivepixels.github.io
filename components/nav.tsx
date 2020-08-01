@@ -56,7 +56,7 @@ function NavLink({ href, title, active }: NavLinkProps) {
   return (
     <Link href={href}>
       <a
-        className={`sm:mr-3 text-xl pt-1 px-1 mb-1 ${
+        className={`sm:mr-3 sm:text-lg text-xl pt-1 px-1 mb-1 ${
           active ? 'text-orange-500' : ''
         }`}
       >
