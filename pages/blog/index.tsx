@@ -2,7 +2,7 @@ import { name as appName } from 'app.json'
 import Layout from 'components/layout'
 import { format, parse } from 'date-fns'
 import { displayDateFormat, serializedDateFormat } from 'lib/post-date-format'
-import { getPreviews, Preview as PreviewModel } from 'lib/posts'
+import { getPreviews, Preview as PreviewType } from 'lib/posts'
 import { GetStaticProps } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
@@ -10,10 +10,10 @@ import { ReactElement } from 'react'
 import Title from 'components/title'
 
 type Props = {
-  previews: PreviewModel[]
+  previews: PreviewType[]
 }
 
-type PreviewProps = PreviewModel
+type PreviewProps = PreviewType
 
 export const getStaticProps: GetStaticProps<Props> = () =>
   getPreviews().then((previews) => ({ props: { previews } }))
