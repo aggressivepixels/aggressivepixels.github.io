@@ -27,7 +27,6 @@
   },
   "dependencies": {
     "@prefresh/next": "^0.3.2",
-    "@silvenon/remark-smartypants": "^1.0.0",
     "@tailwindcss/typography": "^0.2.0",
     "date-fns": "^2.15.0",
     "fp-ts": "^2.7.1",
@@ -48,9 +47,12 @@
     "rehype-stringify": "^8.0.0",
     "remark-parse": "^8.0.3",
     "remark-rehype": "^7.0.0",
+    "retext": "^7.0.1",
+    "retext-smartypants": "^4.0.0",
     "typeface-overpass": "^0.0.72",
     "typeface-overpass-mono": "^0.0.71",
-    "unified": "^9.1.0"
+    "unified": "^9.1.0",
+    "unist-util-visit": "^2.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",

@@ -13,9 +13,11 @@ import rehypeSlug from 'rehype-slug'
 import rehypeStringify from 'rehype-stringify'
 import remarkParse from 'remark-parse'
 import remarkRehype from 'remark-rehype'
+import retext from 'retext'
+import retextSmartypants from 'retext-smartypants'
 import unified from 'unified'
 import { Node } from 'unist'
-import remarkSmartypants from '@silvenon/remark-smartypants'
+import visit from 'unist-util-visit'
 
 const POSTS_DIR = path.join(process.cwd(), 'posts')
 const EXCERPT_SEPARATOR = '<!-- end excerpt -->'
@@ -222,6 +224,16 @@ function markdownToHTML(markdown: string): Promise<string> {
 
   function groupedHeadings(h: H, node: Node) {
     return h(node, `h${node.depth}`, { class: 'group' }, all(h, node))
+  }
+
+  function remarkSmartypants(options?: object) {
+    const processor = retext().use(retextSmartypants, options)
+
+    return (tree: Node) => {
+      visit(tree, 'text', (node) => {
+        node.value = String(processor.processSync(node.value))
+      })
+    }
   }
 }
 
