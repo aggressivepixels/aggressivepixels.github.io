@@ -9,7 +9,7 @@ This took _way_ longer than I expected
 
 The [Go](https://golang.org) generator I first built for this blog was... okay.
 It did what it needed to do, it was fast and it was very small. But I wasn't
-happy with it — HTML templates are brittle, and so is CSS. Having a bit of
+happy with it -- HTML templates are brittle, and so is CSS. Having a bit of
 experience with [Elm](https://elm-lang.org), I really wanted something like
 it's [`Html`](https://package.elm-lang.org/packages/elm/html/latest/) package.
 _However_ I find Elm to be an overkill for a simple blog, and I don't find the
@@ -42,7 +42,7 @@ I'm slowly starting to feel some things "click".
 Overall it took about 14 days to get this generator to be as capable as the
 old one (even though the old one did not provide type-safety for HTML nor CSS).
 
-It still needs a lot of work though — the error handling is non-existing,
+It still needs a lot of work though -- the error handling is non-existing,
 I'm probably abusing do notation and there are likely better, terser ways of
 doing most of what I'm doing in it.
 
