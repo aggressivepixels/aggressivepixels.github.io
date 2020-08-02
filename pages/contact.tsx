@@ -13,7 +13,7 @@ export default function Contact(): ReactElement {
       <Title>
         <h1 className="mb-6">Wanna chat?</h1>
       </Title>
-      <p>I&lsquo;ll add some contact information here later. Promise!</p>
+      <p>I&rsquo;ll add some contact information here later. Promise!</p>
     </Layout>
   )
 }

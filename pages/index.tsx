@@ -14,7 +14,7 @@ export default function Home(): ReactElement {
         <h1 className="mb-6">Hey there!</h1>
       </Title>
       <div className="space-y-1">
-        <p>My name&lsquo;s Jonathan, and I&lsquo;m a web developer.</p>
+        <p>My name&rsquo;s Jonathan, and I&rsquo;m a web developer.</p>
         <p>There will be some stuff here later.</p>
       </div>
     </Layout>

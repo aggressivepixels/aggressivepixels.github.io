@@ -1,3 +1,4 @@
+declare module '@silvenon/remark-smartypants'
 declare module 'rehype-highlight'
 declare module 'rehype-slug'
 declare module 'rehype-autolink-headings'

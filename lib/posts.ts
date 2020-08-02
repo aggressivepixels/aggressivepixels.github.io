@@ -15,6 +15,7 @@ import remarkParse from 'remark-parse'
 import remarkRehype from 'remark-rehype'
 import unified from 'unified'
 import { Node } from 'unist'
+import remarkSmartypants from '@silvenon/remark-smartypants'
 
 const POSTS_DIR = path.join(process.cwd(), 'posts')
 const EXCERPT_SEPARATOR = '<!-- end excerpt -->'
@@ -160,6 +161,7 @@ function splitExcerpt(rawContent: string): [string, string] {
 function markdownToHTML(markdown: string): Promise<string> {
   return unified()
     .use(remarkParse)
+    .use(remarkSmartypants)
     .use(remarkRehype, {
       handlers: {
         heading: groupedHeadings,
