@@ -11,10 +11,12 @@ export default function Home(): ReactElement {
         <title>{appName}</title>
       </Head>
       <Title>
-        <h1>Hello!</h1>
+        <h1 className="mb-6">Hey there!</h1>
       </Title>
-      <p>My name&lsquo;s Jonathan, and I&lsquo;m a web developer.</p>
-      <p>There will be some stuff here later.</p>
+      <div className="space-y-1">
+        <p>My name&lsquo;s Jonathan, and I&lsquo;m a web developer.</p>
+        <p>There will be some stuff here later.</p>
+      </div>
     </Layout>
   )
 }

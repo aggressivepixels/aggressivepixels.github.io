@@ -11,8 +11,9 @@ export default function Contact(): ReactElement {
         <title>Contact &mdash; {appName}</title>
       </Head>
       <Title>
-        <h1>Wanna chat?</h1>
+        <h1 className="mb-6">Wanna chat?</h1>
       </Title>
+      <p>I&lsquo;ll add some contact information here later. Promise!</p>
     </Layout>
   )
 }
