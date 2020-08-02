@@ -72,6 +72,28 @@ export async function getPost(slug: string): Promise<Post> {
   }
 }
 
+export async function getPrevPreview(slug: string): Promise<Preview | null> {
+  const previews = await getPreviews()
+  const index = previews.findIndex((p) => p.slug === slug)
+
+  if (index < 0) {
+    return null
+  }
+
+  return previews[index + 1] ?? null
+}
+
+export async function getNextPreview(slug: string): Promise<Preview | null> {
+  const previews = await getPreviews()
+  const index = previews.findIndex((p) => p.slug === slug)
+
+  if (index < 0) {
+    return null
+  }
+
+  return previews[index - 1] ?? null
+}
+
 export async function getPreviews(): Promise<Preview[]> {
   const slugs = await getSlugs()
   return Promise.all(slugs.map(getPreview)).then((previews) =>

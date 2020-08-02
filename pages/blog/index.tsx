@@ -6,6 +6,7 @@ import { GetStaticProps } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 import { ReactElement } from 'react'
+import ArrowNarrowRight from 'components/icons/arrow-narrow-right'
 
 type Props = {
   previews: PreviewType[]
@@ -59,7 +60,15 @@ function Preview({
       </h2>
       <div className="prose" dangerouslySetInnerHTML={{ __html: excerpt }} />
       <Link href="/blog/[slug]" as={`/blog/${slug}`}>
-        <a className="inline-block text-orange-500">Read more &rarr;</a>
+        <a className="inline-block text-orange-500">
+          Read more{' '}
+          <span
+            className="inline-block w-4 h-4"
+            style={{ paddingTop: '0.20rem' }}
+          >
+            <ArrowNarrowRight />
+          </span>
+        </a>
       </Link>
     </article>
   )
