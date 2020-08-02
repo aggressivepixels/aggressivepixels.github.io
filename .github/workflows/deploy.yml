@@ -20,6 +20,7 @@ jobs:
       - name: Deploy
         run: |
           cd out/
+          touch .nojekyll
           git init .
           git config user.name "${{github.actor}}"
           git config user.email "${{github.actor}}@users.noreply.github.com"
