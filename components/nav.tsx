@@ -16,14 +16,14 @@ export default function Nav(): ReactElement {
         <Link href="/">
           <a className="ml-4 mr-2 block uppercase font-semibold pt-1 select-none text-xl text-gray-900">
             Aggressive
-            <span className="text-orange-500">Pixels</span>
+            <span className="text-yellow-500">Pixels</span>
           </a>
         </Link>
         <div className="sm:hidden mr-3">
           <button
             className={`block h-8 w-8 p-1 rounded ${
               menuOpen
-                ? 'text-orange-500 bg-orange-500 bg-opacity-25'
+                ? 'text-yellow-500 bg-yellow-500 bg-opacity-25'
                 : 'text-current'
             }`}
             onClick={() => setMenuOpen(!menuOpen)}
@@ -58,7 +58,7 @@ function NavLink({ href, title, active }: NavLinkProps) {
     <Link href={href}>
       <a
         className={`sm:mr-3 sm:text-lg text-xl pt-1 px-1 mb-1 ${
-          active ? 'text-orange-500' : ''
+          active ? 'text-yellow-500' : ''
         }`}
       >
         {title}

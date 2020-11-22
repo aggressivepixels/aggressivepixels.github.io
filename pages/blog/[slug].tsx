@@ -77,7 +77,7 @@ export default function Post({
             {prevPreview !== null && (
               <div>
                 <p>Previous post</p>
-                <p className="mt-1 text-xl text-orange-500">
+                <p className="mt-1 text-xl text-yellow-500">
                   <Link href="/blog/[slug]" as={`/blog/${prevPreview.slug}`}>
                     <a>
                       <span className="sm:inline-block hidden w-4 h-4 pt-px">
@@ -94,7 +94,7 @@ export default function Post({
             {nextPreview !== null && (
               <div className="sm:mt-0 mt-6">
                 <p>Next post</p>
-                <p className="mt-1 text-xl text-orange-500">
+                <p className="mt-1 text-xl text-yellow-500">
                   <Link href="/blog/[slug]" as={`/blog/${nextPreview.slug}`}>
                     <a>
                       {nextPreview.title}{' '}

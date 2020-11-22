@@ -60,7 +60,7 @@ function Preview({
       </h2>
       <div className="prose" dangerouslySetInnerHTML={{ __html: excerpt }} />
       <Link href="/blog/[slug]" as={`/blog/${slug}`}>
-        <a className="inline-block text-orange-500">
+        <a className="inline-block text-yellow-500">
           Read more{' '}
           <span
             className="inline-block w-4 h-4"

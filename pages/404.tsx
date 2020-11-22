@@ -18,7 +18,7 @@ export default function Contact(): ReactElement {
         The page you are looking for doesn&rsquo;t seem to exist.
       </p>
       <Link href="/">
-        <a className="text-orange-500">Go home</a>
+        <a className="text-yellow-500">Go home</a>
       </Link>
     </Layout>
   )
