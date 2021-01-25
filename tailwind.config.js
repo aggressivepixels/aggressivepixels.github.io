@@ -61,10 +61,14 @@ module.exports = {
   variants: {
     typography: ['dark'],
     display: ['responsive', 'group-hover'],
+    extend: {
+      opacity: ['disabled'],
+    },
   },
   plugins: [
     require('@tailwindcss/typography')({
       modifiers: [],
     }),
+    require('@tailwindcss/forms'),
   ],
 }
