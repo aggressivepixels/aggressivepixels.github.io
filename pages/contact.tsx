@@ -21,6 +21,10 @@ export default function Contact(): ReactElement {
   const [showSuccessAlert, setShowSuccessAlert] = useState(false)
 
   async function onSubmit(form: Form) {
+    if (submitting) {
+      return
+    }
+
     const formData = new FormData()
     formData.append('name', form.name)
     formData.append('email', form.email)
@@ -159,7 +163,7 @@ export default function Contact(): ReactElement {
       <div
         className={`${
           showErrorAlert ? 'opacity-100' : 'opacity-0'
-        } py-8 px-4 fixed right-0 bottom-0 z-30 transition duration-300 ease-out transform scale-90`}
+        } pointer-events-none py-8 px-4 fixed right-0 bottom-0 z-30 transition duration-300 ease-out transform scale-90`}
       >
         <div className="rounded-md shadow-2 px-4 py-3 bg-yellow-200 text-yellow-700">
           <p className="font-medium text-cool-gray-100">
@@ -179,7 +183,7 @@ export default function Contact(): ReactElement {
       <div
         className={`${
           showSuccessAlert ? 'opacity-100' : 'opacity-0'
-        } py-8 px-4 fixed right-0 bottom-0 z-30 transition duration-300 ease-out transform scale-90`}
+        } pointer-events-none py-8 px-4 fixed right-0 bottom-0 z-30 transition duration-300 ease-out transform scale-90`}
       >
         <div className="rounded-md shadow-2 px-4 py-3 bg-green-200 text-green-700">
           <p className="font-medium text-cool-gray-100">
